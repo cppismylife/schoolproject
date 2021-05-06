@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Редактировать профиль
+{% endblock %}
+
+{% block content %}
+  <div class="row g-3">
+    <div class="col">
+      <div class="container">
+        <img src="/media/{{ request.user.profile.profile_image }}" class="img-fluid" />
+        {{form.profile_image}}
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="container">
+        <div class="mb-5 row">
+          <input class="btn btn-primary" onclick=cn() type="button" value="Изменить имя">
+        </div>
+        <div class="mb-5 row">
+          <input class="btn btn-primary" onclick=ce() type="button" value="Изменить почту">
+        </div>
+        <div class="mb-5 row">
+          <input class="btn btn-primary" onclick=cp() type="button" value="Сменить пароль">
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="container">
+        {%if CN == 'change'%}
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">Имя:</label>
+          <div class="col-sm-10">
+            {{form.name}}
+          </div>
+        </div>
+        {%endif%}
+
+        {%if CE == 'change'%}
+        <div class="mb-3 row">
+          <label class="col-sm-2 col-form-label">Email:</label>
+          <div class="col-sm">
+            {{form.email}}
+          </div>
+        </div>
+        {%endif%}
+
+        {%if CP == 'change'%}
+        <div class="mb-3 row">
+          <label class="col-sm col-form-label">Старый пароль:</label>
+          <div class="col-sm">
+            {{form.OldPass}}
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm col-form-label">Новый пароль:</label>
+          <div class="col-sm">
+            {{form.NewPass}}
+          </div>
+        </div>
+
+        <div class="mb-3 row">
+          <label class="col-sm col-form-label">Повторите пароль:</label>
+          <div class="col-sm">
+            {{form.RepNewPass}}
+          </div>
+        </div>
+        {%endif%}
+
+        {%for er in errors%}
+        <div class="mb-3 row">
+          <span class="badge bg-danger">{{er}}</span>
+        </div>
+        {%endfor%}
+      </div>
+    </div>
+
+  </div>
+  <div class="mb-5 row" align="center">
+    <form id="MainForm" enctype="multipart/form-data" name="MainForm" method="post">
+      {% csrf_token %}
+      <input name="Create" type="hidden" value="0">
+      <input name="ChangeName" type="hidden" value={{CN}}>
+      <input name="ChangePassword" type="hidden" value={{CP}}>
+      <input name="ChangeEmail" type="hidden" value={{CE}}>
+      <input class="btn btn-outline-success" onclick=crt() type="submit" value="Сохранить изменения">
+    </form>
+  </div>
+  <script src="{% static 'main/js/ProfileEdit.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,56 @@
+<header>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Simple votings</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+
+        <ul class="navbar-nav mb-2 mb-md-0 me-auto justify-content-center">
+          {% for link in menu %}
+          <li class="nav-item active">
+            <a class="nav-link" aria-current="page" href="{% url link.url_name %}"
+            >{{link.name}}</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+
+        <ul class="navbar-nav mb-2 mb-md-0 ml-auto justify-content-center">
+          {% if request.user.is_authenticated %}
+
+          <li class="nav-item active">
+            <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Выйти</a>
+          </li>
+          <li class="nav-item active ">
+            <a class="nav-link" aria-current="page" href="/profile/{{ request.user.id }}">Профиль</a>
+          </li>
+
+          {% else %}
+
+          <li class="nav-item active ">
+            <a class="nav-link" aria-current="page" href="{% url 'login' %}">Войти</a>
+          </li>
+          <li class="nav-item active ">
+            <a class="nav-link" aria-current="page" href="{% url 'django_registration_register' %}">Зарегистрироваться</a>
+          </li>
+
+          {% endif %}
+        </ul>
+
+      </div>
+    </div>
+  </nav>
+</header>

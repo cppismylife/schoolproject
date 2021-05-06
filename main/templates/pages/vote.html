@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %} {% load bootstrap4 %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block content %}
+  <div class="container w-50">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between">
+          <div>
+            <h3 class="m-0">{{ voting.name }}</h3>
+          </div>
+          <div>
+            <a
+              href="/voting/{{voting.id}}/complain/"
+              role="button"
+              class="btn btn-sm btn-outline-danger"
+            >
+              Пожаловаться
+            </a>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="mb-4">{{ voting.description }}</p>
+          {% if voting.type == 2 %}
+            <div class="d-flex justify-content-around" >
+              {% for radio in form.choices %}
+                {{ radio.tag }}
+                <label
+                        class="btn w-50 p-3 mx-2 {% if forloop.counter0 %}btn-outline-danger{% else %} btn-outline-success{% endif %}"
+                        for="id_choices_{{ forloop.counter0 }}">
+                        {{radio.choice_label}}
+              </label>
+              {% endfor %}
+            </div>
+          {% else %}
+            {% bootstrap_form form %}
+          {% endif %}
+        </div>
+      </div>
+      <button type="submit" class="btn p-2 btn-primary w-100 mb-2">
+        Проголосовать
+      </button>
+      {% if user == voting.author %}
+      <button type="button" class="btn p-2 btn-secondary w-100">
+        Редактировать голосование
+      </button>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}

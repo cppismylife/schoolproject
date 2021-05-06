@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex bd-highlight align-items-center">
+        <h1 class="bd-highlight p-1 card-title me-2">{{ voting.name }}</h1>
+        {% if today < voting.published %}
+          <span class="badge bg-secondary fs-6">Не началось</span>
+        {% elif today > voting.published and today < voting.finishes %}
+          <span class="badge bg-primary fs-6">В прогрессе</span>
+        {% elif today > voting.finishes %}
+          <span class="badge bg-success fs-6">Завершено</span>
+        {% endif %}
+        <div class="ms-auto d-flex flex-column align-items-center">
+          <p class="bd-highlight mb-0">{{ voting.published }}</p>
+          <a
+            href="/voting/{{ voting.id }}/complain"
+            class="bd-highlight m-0 btn btn-link p-0"
+          >Пожаловаться
+          </a
+          >
+        </div>
+      </div>
+    </div>
+
+    <img src="/media/{{ voting.image }}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+
+    <div class="card-body m-2 mb-0">
+        <h3 style="text-align: justify">{{ voting.description }}</h3>
+
+      {% block extra_info %}
+        <div class="d-flex bd-highlight align-items-center mt-4 mb-2">
+            <h2 class="bd-highlight text-primary mb-0">{{ voting.author }}</h2>
+
+            <div class="d-flex flex-column mb-0 ms-auto">
+              {% if today > voting.finishes %}
+                <p class="bd-highlight m-0">Завершено: {{ voting.finishes }}</p>
+              {% endif %}
+              <a href="/voting/{{ voting.id }}/results" class="bd-highlight m-0 btn btn-link p-0">Посмотреть результаты</a>
+              <p align="right"><a href="/voting/{{voting.id}}/edit" class="btn btn-primary ">Редактировать</a></p>
+            </div>
+
+        </div>
+      {% endblock %}
+    </div>
+    {% if eligible_to_vote %}
+      <a href="/voting/{{voting.id}}/vote" class="btn btn-primary btn-lg">Проголосовать</a>
+    {% endif %}
+  </div>
+{% endblock %}

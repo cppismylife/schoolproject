@@ -1,0 +1,49 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block heading %}
+  Регистрация
+{% endblock %}
+
+{% block content %}
+  <form method="post" action=".">
+    {% csrf_token %}
+    <div class="col">
+      {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+          <h4 class="alert-heading">Не удалось зарегистрировать пользователя</h4>
+          <hr>
+          <strong> Список ошибок: </strong> <br>
+          {% for key in form %}
+            {% for value in key.errors %}
+              {{ key.label }}: {{ value|escape }} <br>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="container row">
+          <div class="col">
+            {% for item in form %}
+              <div class="form-group">
+                <label class="form-label fs-3"> {{ item.label }} </label>
+                <div>{{ item }}</div>
+                <div class="mb-3"> {{ item.help_text }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary float-right btn-block mt-4 mb-4"
+      value="{% trans 'Submit' %}"
+    >
+      Зарегистрироваться
+    </button>
+  </form>
+{% endblock %}

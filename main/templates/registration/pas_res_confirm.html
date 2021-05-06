@@ -1,0 +1,23 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Восстановление пароля
+{% endblock %}
+
+{% block content %}
+  {% if validlink %}
+  <p>Пожалуйста, введите пароль дважды:</p>
+  <form action="." method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <p><input class="btn btn-success" type="submit" value="Сменить пароль"/></p>
+  </form>
+  {% else %}
+  <p>Неверная ссылка восстановления пароля, возможно она уже была использована.
+    Пожалуйста, запросите новый сброс пароля</p>
+  {% endif %}
+{% endblock %}

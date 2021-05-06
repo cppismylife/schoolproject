@@ -1,0 +1,13 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Восстановление пароля
+{% endblock %}
+
+{% block content %}
+  <p>Ваш новый пароль был установлен. Вы можете <a href="{% url 'login' %}">войти</a> сейчас</p>
+{% endblock %}

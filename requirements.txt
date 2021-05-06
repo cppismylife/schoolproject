@@ -1,0 +1,7 @@
+Django==3.1.4
+django-bootstrap4==2.3.1
+plotly~=4.14.1
+Pillow==8.1.0
+django-cleanup==5.1.0
+django-registration==3.1.1
+

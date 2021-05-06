@@ -1,0 +1,157 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Редактировать Голосование
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-3">
+      <div class="container">
+        <img src="/media/{{voting.image}}" class="img-fluid" />
+          {{form.image}}
+      </div>
+    </div>
+
+    {% if SV == 'change' %}
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">Начать голосование:</label>
+        <div class="col-sm-10">
+          {{ form.startdate }}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="col-4">
+      <div class="container">
+        <div class="row mb-5">
+          <div class="col">
+            <p>Название : {{voting.name}} </p>
+          </div>
+        {% if CN == 'change' %}
+          <div class="col-sm-10">
+            {{ form.name }}
+          </div>
+        {% endif %}
+
+        </div>
+        <div class="row mb-5">
+          <div class="col">
+            <p>Описание</p>
+          </div>
+          <div class="col">
+            <div class="form-floating">
+              <textarea class="form-control" placeholder="Описание" id="description" style="height: 100px"></textarea>
+              <label for="description">Введите описание</label>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-5">
+          <div class="col">
+            <p>Варианты</p>
+          </div>
+          <div class="col">
+            {%for variant in votevariants%}
+              {% if variant.voting_id == 1%} <!--id?-->
+                <div class="form-floating mb-3">
+                  <textarea class="form-control" placeholder="Вариант" id="variant{{ forloop.counter }}"></textarea>
+                  <label for="variant{{ forloop.counter }}">Вариант</label>
+                </div>
+              {% endif %}
+            {% endfor %}
+            <a href="">Добавить вариант</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class = "col-4">
+      <div class="row mb-3">
+        <div class="col">
+          <p>Дата начала</p>
+        </div>
+        <div class="col">
+          <div class="form-floating">
+            <input type="datetime-local" name="start_time" placeholder="Дата начала" class="form-control" id="startdate">
+            <label class="form-label">Дата начала</label>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-5">
+        <div class="col">
+          <p>Дата окончания</p>
+        </div>
+        <div class="col">
+          <div class="form-floating">
+            <input type="datetime-local" name="start_time" placeholder="Дата окончания" class="form-control" id="enddate">
+            <label class="form-label">Дата конца</label>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <div class="col">
+          <p>Вид голосования</p>
+        </div>
+        <div class = "col-5">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              Тип голосования
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li class="dropdown-item" >Многие из многих</li>
+              <li class="dropdown-item" >Один из многих</li>
+              <li class="dropdown-item" >Один из двух</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {%if EV == 'change'%}
+      <div class="mb-3 row">
+        <label class="col-sm-2 col-form-label">Закончить голосование:</label>
+        <div class="col-sm-10">
+          {{form.enddate}}
+        </div>
+      </div>
+    {%endif%}
+
+
+    <div class="col-4 m-3 p-3">
+      <div class="row mb-4">
+        <input class="btn btn-primary btn-sm" onclick=sv() type="button" value="Начать сейчас">
+      </div>
+      <div class="row mb-4">
+        <input class="btn btn-primary btn-sm" onclick=ev() type="button" value="Закончить сейчас">
+      </div>
+      <div class="row mb-4">
+        <input class="btn btn-primary btn-sm" onclick=dv() type="button" value="Удалить голосование">
+      </div>
+      <div class="row mb-4">
+        <input class="btn btn-primary btn-sm" onclick=cn() type="button" value="Изменить название">
+      </div>
+    </div>
+    <div class="mb-5 row" align="center">
+      <form id="MainForm" enctype="multipart/form-data" name="MainForm" method="post">
+        {% csrf_token %}
+
+        <input name="startdate" type="hidden" value={{SV}}>
+        <input name="enddate" type="hidden" value={{EV}}>
+        <input name="DelVote" type="hidden" value={{DV}}>
+        <input name="name" type="hidden" value={{CN}}>
+        <input class="btn btn-outline-success"  type="submit" value="Сохранить изменения">
+
+
+
+      </form>
+    </div>
+  </div>
+
+
+  <script src="{% static 'main/js/VotingEdit.js' %}"></script>
+{% endblock %}

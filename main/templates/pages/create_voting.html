@@ -1,0 +1,98 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Создать Новое голосование
+{% endblock %}
+
+{% block content %}
+  <div class="accordion" id="accordionExample">
+    {% for key,item in accordion_context.items %}
+    {% if key == type_of %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading{{item.number}}">
+        <button class="accordion-button show" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse{{item.number}}" aria-expanded="true"
+                aria-controls="collapse{{item.number}}">
+          {{item.name}}
+        </button>
+      </h2>
+      <div id="collapse{{item.number}}" class="accordion-collapse show" aria-labelledby="heading{{item.number}}"
+           data-bs-parent="#accordionExample">
+        {%else%}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="heading{{item.number}}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{item.number}}" aria-expanded="true"
+                    aria-controls="collapse{{item.number}}">
+              {{item.name}}
+            </button>
+          </h2>
+          <div id="collapse{{item.number}}" class="accordion-collapse collapse"
+               aria-labelledby="heading{{item.number}}"
+               data-bs-parent="#accordionExample">
+            {%endif%}
+            <div class="accordion-body">
+              <form enctype="multipart/form-data" name="form_maker{{key}}" method="post">
+                {% csrf_token %}
+                <div class="row g-2">
+                  {%for form in voteinfo%}
+                    {%if form.label == 'Описание голосования' %}
+                    <div class="form-floating ">
+                        {{form}}
+                        <label class="form-label">{{form.label}}</label>
+                      </div>
+                    {%elif form.label != 'Загрузите изображение'%}
+                      <div class="col-3 form-floating ">
+                        {{form}}
+                        <label class="form-label">{{form.label}}</label>
+                      </div>
+                    {%else%}
+                      <div class="col-3">
+                        <span class="badge bg-secondary">{{form.label}}</span>
+                        {{form}}
+                      </div>
+                    {%endif%}
+                  {% endfor %}
+                </div>
+                <br>
+                <ol>
+                  {% for form in item.forms %}
+                  <li> {{form.var}}</li>
+                  {% endfor %}
+                </ol>
+                <input type="hidden" name="type_of" value={{key}}>
+                <input type="hidden" name="create" value="0">
+                <input type="hidden" name="count{{key}}" value={{item.count}}>
+                <input class="btn btn-outline-success" onclick=crt({{key}}) type="submit" value="Создать">
+              </form>
+              {%if item.number != "Three" %}
+              <form method="post">
+                {% csrf_token %}
+                <input class="btn btn-outline-primary" onclick=inc({{key}}) type="button" value="Добавить вариант">
+              </form>
+              <form method="post">
+                {% csrf_token %}
+                <input class="btn btn-outline-primary" onclick=dec({{key}}) type="button" value="Удалить вариант">
+              </form>
+              {% endif %}
+
+              {% if error and key == type_of%}
+              {%for er in errors%}
+              <span class="badge bg-danger">{{er}}</span>
+              {%endfor%}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'main/js/CreateVoting.js' %}"></script>
+{% endblock %}

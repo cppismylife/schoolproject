@@ -1,0 +1,10 @@
+{% extends "base/base.html" %}
+{% load i18n %}
+
+{% block heading %}
+  Поздравляю, Вы зарегистрированы
+{% endblock %}
+
+{% block content %}
+  <a href="{% url 'login' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-dark">Войти</a>
+{% endblock %}

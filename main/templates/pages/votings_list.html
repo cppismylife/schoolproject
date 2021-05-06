@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Голосования
+{% endblock %}
+
+{% block content %}
+  {%if not votings%}
+  <p align="center">
+    <h2> Пока нет голосований </h2>
+  </p>
+  {%endif%}
+  {%for voting in votings%}
+    <div class="row">
+
+      <div class="col-sm-1 g-5">
+        <p></p>
+      </div>
+      <div class="col-sm-4 g-5">
+        <img src="/media/{{voting.image.name}}" class="img-fluid" alt="Image">
+      </div>
+
+      <div class="col-sm-7 g-5">
+        <div class="card border-dark">
+          <div class="card-header">
+            <h1>{{voting.name}}</h1>
+          </div>
+          <div class="card-body">
+            <h5 class="card-text">{{voting.description}}</h5>
+            <p align="right"><a href="/voting/{{voting.id}}" class="btn btn-primary ">Просмотреть</a></p>
+            <div class="card-footer">
+              <p class="card-text"><small class="text-muted">
+                Начало: {{voting.published}} <br>
+                Окончание: {{voting.finishes}}
+              </small></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
