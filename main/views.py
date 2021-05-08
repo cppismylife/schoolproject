@@ -36,7 +36,7 @@ def voting_edit(request, **kwargs):
         'menu': get_menu_context(request.user.is_authenticated),
         'SV': request.POST.get('startdate', False),
         'EV': request.POST.get('enddate', False),
-        'CN' : request.POST.get('name', False),
+        'CN': request.POST.get('name', False),
         'CD': request.POST.get('description', False),
         'Create': int(request.POST.get('Create', 0)),
 
@@ -53,8 +53,8 @@ def voting_edit(request, **kwargs):
         if context['SV'] == 'change':
             try:
 
-                #vot.fields['startdate'].clean(value=vot.data['startdate'])
-                voting.published = timezone.now()  #vot.data['startdate']
+                # vot.fields['startdate'].clean(value=vot.data['startdate'])
+                voting.published = timezone.now()  # vot.data['startdate']
                 voting.save()
             except:
                 raise NotImplementedError
@@ -66,19 +66,20 @@ def voting_edit(request, **kwargs):
                 voting.save()
             except:
                 raise NotImplementedError
-        context ['errors'] = list()
+        context['errors'] = list()
         if vot.is_valid():
             for changed_field in vot.changed_data:
                 if changed_field == 'name':
                     voting.name = vot.cleaned_data['name']
                 elif changed_field == "startdate":
-                    if timezone.now() >= parse_datetime(vot.changed_data ['start_time']).astimezone():
-                        context ['errors'].append('Начало голосования должно быть не раньше текущего времени')
+                    if timezone.now() >= parse_datetime(vot.changed_data['start_time']).astimezone():
+                        context['errors'].append('Начало голосования должно быть не раньше текущего времени')
                     else:
                         voting.startdate = vot.cleaned_data["startdate"]
                 elif changed_field == "enddate":
-                    if parse_datetime(vot.changed_data ['start_time']) >= parse_datetime(vot.changed_data ['finish_time']):
-                        context ['errors'].append('Окончание голосования должно быть позже начала')
+                    if parse_datetime(vot.changed_data['start_time']) >= parse_datetime(
+                        vot.changed_data['finish_time']):
+                        context['errors'].append('Окончание голосования должно быть позже начала')
                     else:
                         voting.startdate = vot.cleaned_date['startdate']
                 elif changed_field == 'description':
@@ -86,9 +87,9 @@ def voting_edit(request, **kwargs):
 
         for error in vot.changed_data:
             if error == 'start_time':
-                context ['errors'].append('Неправильное время начала голосования')
+                context['errors'].append('Неправильное время начала голосования')
             elif error == 'finish_time':
-                context ['errors'].append('Неправильное время окончания голосования')
+                context['errors'].append('Неправильное время окончания голосования')
 
         return redirect('voting_page', **kwargs)
 
@@ -192,7 +193,7 @@ class ComplaintCreate(LoginRequiredMixin, FormView):
             'voting': get_object_or_404(Voting, id=self.kwargs['id']),
             'today': timezone.now(),
             'form': self.get_form_class(),
-            'pagename':  'Пожаловаться'
+            'pagename': 'Пожаловаться'
         }
 
 
@@ -380,7 +381,6 @@ def profile_edit_page(request):
 
 @login_required()
 def profile_page(request, id):
-
     if request.user.id != id and not request.user.is_superuser and not request.user.is_staff:
         raise PermissionDenied('can not view this profile')
 
@@ -437,3 +437,13 @@ def complaint_page(request, id):
     context['color'] = colors[complaint.status]
 
     return render(request, 'pages/complaint.html', context)
+
+
+class VotingSearch(TemplateView):
+    template_name = 'pages/voting_search.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VotingSearch, self).get_context_data(**kwargs)
+        context['pagename'] = 'Найти голосование'
+        context['menu'] = get_menu_context(self.request.user.is_authenticated)
+        return context

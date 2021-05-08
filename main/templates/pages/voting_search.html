@@ -1,0 +1,17 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+  {{ pagename }}
+{% endblock %}
+
+{% block heading %}
+  Найти голосование
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <input type="number" class="form-control" placeholder="Введите номер голосования" id="votingSearchForm"
+         style="height: 7vh; font-size: 1.2rem;"/>
+  <button class="btn btn-success mt-4 btn-lg">Найти</button>
+</div>
+{% endblock %}

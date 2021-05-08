@@ -39,6 +39,7 @@ urlpatterns += [
     path('voting/<int:id>/vote/', views.vote_page, name='vote'),
     path('voting/<int:id>/results/', views.VotingResults.as_view(), name='results_page'),
     path('voting/<int:id>/complain/', views.ComplaintCreate.as_view(), name='create_complaint'),
+    path('voting_search/', views.VotingSearch.as_view(), name='voting_search')
 ]
 
 # profile
