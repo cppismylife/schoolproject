@@ -13,11 +13,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+
+DJANGO_SETTINGS_MODULE = os.path.join(BASE_DIR, 'schoolproject/settings.py')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "schoolproject.settings")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '&d-$*1ejs%9g_75#iu0s8arxy(pn_)gpq65kq$0m2-p($&4n^-'
@@ -52,16 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'simple_votings.urls'
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_PORT = 2525
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'dj-gr-2@mail.ru'
-EMAIL_HOST_PASSWORD = 'djangogroup02'
-SERVER_EMAIL = EMAIL_HOST_USER
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ROOT_URLCONF = 'schoolproject.urls'
 
 TEMPLATES = [
     {
@@ -100,13 +94,10 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'OPTIONS': {
+            'min_length': 6,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
@@ -117,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-ru'
 # LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
