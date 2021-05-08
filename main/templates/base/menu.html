@@ -3,7 +3,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/">Simple votings</a>
+      <a class="navbar-brand" href="/">Главная</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -32,7 +32,7 @@
           {% if request.user.is_authenticated %}
 
           <li class="nav-item active">
-            <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Выйти</a>
+            <a class="nav-link" aria-current="page" href="/logout">Выйти</a>
           </li>
           <li class="nav-item active ">
             <a class="nav-link" aria-current="page" href="/profile/{{ request.user.id }}">Профиль</a>
@@ -41,10 +41,10 @@
           {% else %}
 
           <li class="nav-item active ">
-            <a class="nav-link" aria-current="page" href="{% url 'login' %}">Войти</a>
+            <a class="nav-link" aria-current="page" href="/login">Войти</a>
           </li>
           <li class="nav-item active ">
-            <a class="nav-link" aria-current="page" href="{% url 'django_registration_register' %}">Зарегистрироваться</a>
+            <a class="nav-link" aria-current="page" href="/accounts/register">Зарегистрироваться</a>
           </li>
 
           {% endif %}

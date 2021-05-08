@@ -114,6 +114,7 @@ class VoteManyOfManyForm(VoteForm):
         widget=forms.CheckboxSelectMultiple,
     )
 
+
 class VotingEditForm(forms.Form):
     startdate = forms.DateTimeField(
 
@@ -149,13 +150,14 @@ class VotingEditForm(forms.Form):
     )
     description = forms.CharField(
         required=False,
-        widget = forms.TextInput(
+        widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
                 'form': 'MainForm',
             }
         )
     )
+
 
 class ProfileEditForm(forms.Form):
     name = forms.CharField(

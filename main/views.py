@@ -104,8 +104,7 @@ def voting_edit(request, **kwargs):
 
 def index_page(request):
     context = {
-        'pagename': 'Simple votings',
-        'author': 'Andrew',
+        'pagename': 'Опросы и голосования',
         'pages': 4,
         'auth': request.user.is_authenticated,
         'menu': get_menu_context(request.user.is_authenticated)
