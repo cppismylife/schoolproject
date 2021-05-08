@@ -14,15 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from django_registration.backends.activation.views import RegistrationView
+from django.urls import path, include, reverse
+from django_registration.backends.one_step.views import RegistrationView
 
 from main import views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
-
-
 
 # base
 from main.forms import CustomRegistrationForm
@@ -101,24 +99,18 @@ urlpatterns += [
 # auth_and_register
 urlpatterns += [
     path('accounts/register/',
-        RegistrationView.as_view(
-            form_class=CustomRegistrationForm
-        ),
-        name='django_registration_register'
-    ),
-    path('accounts/', include('django_registration.backends.activation.urls')),
-
+         RegistrationView.as_view(
+             form_class=CustomRegistrationForm,
+             success_url=reverse('index')
+         ), name='django_registration_register',),
+    path('accounts/', include('django_registration.backends.one_step.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path(
-        'login/',
-        auth_views.LoginView.as_view(
-            extra_context={
-                'menu': views.get_menu_context(),
-                'pagename': 'Авторизация'
-            }
-        ),
-        name='login'
-    ),
+    path('login/', auth_views.LoginView.as_view(
+             extra_context={
+                 'menu': views.get_menu_context(),
+                 'pagename': 'Авторизация'
+             }
+         ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
