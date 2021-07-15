@@ -18,7 +18,7 @@ class Voting(models.Model):
     type = models.IntegerField(choices=TYPE_CHOICES, default=CHECKBOXES)
     published = models.DateTimeField(default=timezone.now)
     finishes = models.DateTimeField(null=False)
-    image = models.ImageField(upload_to='votings', null=True, default='votings/No-image.png')
+    image = models.ImageField(upload_to='votings', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -54,7 +54,7 @@ class Complaint(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_image = models.ImageField(upload_to='users', null=True, default='users/No-image.png')
+    profile_image = models.ImageField(upload_to='users', blank=True, null=True)
 
 
 # hook to create UserProfile when creating User

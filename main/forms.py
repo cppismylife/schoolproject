@@ -118,7 +118,7 @@ class VoteManyOfManyForm(VoteForm):
 class VotingEditForm(forms.Form):
     startdate = forms.DateTimeField(
 
-        required=True,
+        required=False,
         widget=forms.DateTimeInput(
             attrs={
                 'placeholder': 'Начало голосования',
@@ -128,7 +128,7 @@ class VotingEditForm(forms.Form):
         )
     )
     enddate = forms.DateTimeField(
-        required=True,
+        required=False,
         widget=forms.DateTimeInput(
             attrs={
                 'placeholder': 'Начало голосования',
@@ -262,3 +262,15 @@ class CustomRegistrationForm(RegistrationForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }
+
+
+class VotingSearchForm(forms.Form):
+    voting_id = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'class': "form-control",
+            'placeholder': "Введите номер голосования",
+            'style': "height: 7vh; font-size: 1.2rem;",
+            'required': 'true'
+        }),
+        label=''
+    )

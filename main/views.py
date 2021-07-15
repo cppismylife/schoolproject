@@ -1,9 +1,12 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.generic import TemplateView, FormView
@@ -13,7 +16,7 @@ from plotly.io import to_html
 from main.extra_func import get_forms, check_valid_and_create, check_eligible_to_vote
 from main.forms import InputForm, VotingContext, VoteOneOfTwoForm, \
     VoteOneOfManyForm, VoteManyOfManyForm, ProfileEditForm, \
-    ComplaintCreateForm, VotingEditForm
+    ComplaintCreateForm, VotingEditForm, VotingSearchForm
 from main.models import Voting, VoteVariant, VoteFact, Complaint, User
 
 
@@ -32,7 +35,7 @@ def get_menu_context(auth=False):
 @login_required()
 def voting_edit(request, **kwargs):
     context = {
-        'pagename': 'Редактировать Голосование',
+        'pagename': 'Редактировать голосование',
         'menu': get_menu_context(request.user.is_authenticated),
         'SV': request.POST.get('startdate', False),
         'EV': request.POST.get('enddate', False),
@@ -72,18 +75,18 @@ def voting_edit(request, **kwargs):
                 if changed_field == 'name':
                     voting.name = vot.cleaned_data['name']
                 elif changed_field == "startdate":
-                    if timezone.now() >= parse_datetime(vot.changed_data['start_time']).astimezone():
+                    if timezone.now() >= parse_datetime(vot.changed_data['start_time']).astimezone() + datetime.timedelta(minutes=1):
                         context['errors'].append('Начало голосования должно быть не раньше текущего времени')
                     else:
                         voting.startdate = vot.cleaned_data["startdate"]
                 elif changed_field == "enddate":
-                    if parse_datetime(vot.changed_data['start_time']) >= parse_datetime(
-                        vot.changed_data['finish_time']):
+                    if parse_datetime(vot.changed_data['start_time']) >= parse_datetime(vot.changed_data['finish_time']):
                         context['errors'].append('Окончание голосования должно быть позже начала')
                     else:
                         voting.startdate = vot.cleaned_date['startdate']
                 elif changed_field == 'description':
                     voting.description = vot.cleaned_data['description']
+            voting.save()
 
         for error in vot.changed_data:
             if error == 'start_time':
@@ -319,7 +322,8 @@ def create_voting_page(request):
             elif error == 'finish_time':
                 context['errors'].append('Неправильное время окончания голосования')
         if voteinfo.is_valid():
-            if timezone.now() >= parse_datetime(voteinfo.data['start_time']).astimezone():
+            if timezone.now() >= parse_datetime(voteinfo.data['start_time']).astimezone() + datetime.timedelta(
+                minutes=1):
                 context['errors'].append('Начало голосования должно быть не раньше текущего времени')
             if parse_datetime(voteinfo.data['start_time']) >= parse_datetime(voteinfo.data['finish_time']):
                 context['errors'].append('Окончание голосования должно быть позже начала')
@@ -439,8 +443,19 @@ def complaint_page(request, id):
     return render(request, 'pages/complaint.html', context)
 
 
-class VotingSearch(TemplateView):
+class VotingSearch(FormView):
     template_name = 'pages/voting_search.html'
+    form_class = VotingSearchForm
+    success_url = ''
+
+    def form_valid(self, form):
+        try:
+            voting = Voting.objects.get(id=form.cleaned_data['voting_id'])
+            return redirect('voting_page', id=voting.id)
+        except Voting.DoesNotExist:
+            context = self.get_context_data()
+            context['error'] = 'Голосования с таким номером не существует'
+            return render(self.request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super(VotingSearch, self).get_context_data(**kwargs)

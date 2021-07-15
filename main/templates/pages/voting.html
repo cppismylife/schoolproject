@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block title %}
   {{ pagename }}
 {% endblock %}
@@ -27,8 +27,11 @@
         </div>
       </div>
     </div>
-
-    <img src="/media/{{ voting.image }}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+    {% if voting.image == null %}
+      <img src="{% static 'main/No-image.png' %}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+    {% else %}
+      <img src="/media/{{ voting.image }}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+    {% endif %}
 
     <div class="card-body m-2 mb-0">
         <h3 style="text-align: justify">{{ voting.description }}</h3>

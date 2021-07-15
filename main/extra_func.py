@@ -1,3 +1,5 @@
+import datetime
+
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
@@ -20,8 +22,8 @@ def check_valid_and_create(context, forms, request, voteinfo):
             flag = False
     if flag and voteinfo.is_valid() and \
         timezone.now() < \
-        parse_datetime(voteinfo.data['start_time']).astimezone() < \
-        parse_datetime(voteinfo.data['finish_time']).astimezone():
+        parse_datetime(voteinfo.data['start_time']).astimezone() + datetime.timedelta(minutes=1) < \
+        parse_datetime(voteinfo.data['finish_time']).astimezone() + datetime.timedelta(minutes=1):
         try:
             voting = Voting(author=request.user,
                             name=voteinfo.data['name'],
@@ -49,7 +51,6 @@ def check_valid_and_create(context, forms, request, voteinfo):
 
 
 def check_eligible_to_vote(voting: Voting, user: User) -> bool:
-
     if user.is_anonymous:
         return False
 

@@ -10,8 +10,13 @@
 
 {% block content %}
 <div class="container">
-  <input type="number" class="form-control" placeholder="Введите номер голосования" id="votingSearchForm"
-         style="height: 7vh; font-size: 1.2rem;"/>
-  <button class="btn btn-success mt-4 btn-lg">Найти</button>
+  <form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn btn-success mt-4 btn-lg" type="submit">Найти</button>
+  </form>
+  {% if error %}
+    <h3 class="text-danger mt-4>{{error}}</h3>
+  {% endif %}
 </div>
 {% endblock %}

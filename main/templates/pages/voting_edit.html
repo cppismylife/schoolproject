@@ -13,8 +13,12 @@
   <div class="row">
     <div class="col-3">
       <div class="container">
-        <img src="/media/{{voting.image}}" class="img-fluid" />
-          {{form.image}}
+        {% if voting.image == null %}
+          <img src="{% static 'main/No-image.png' %}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+        {% else %}
+          <img src="/media/{{ voting.image }}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
+        {% endif %}
+        <p><strong>{{voting.name}}</strong></p>
       </div>
     </div>
 
@@ -31,38 +35,34 @@
       <div class="container">
         <div class="row mb-5">
           <div class="col">
-            <p>Название : {{voting.name}} </p>
-          </div>
-        {% if CN == 'change' %}
-          <div class="col-sm-10">
-            {{ form.name }}
-          </div>
-        {% endif %}
-
-        </div>
-        <div class="row mb-5">
-          <div class="col">
-            <p>Описание</p>
+            <p>Изменить название: </p>
           </div>
           <div class="col">
             <div class="form-floating">
-              <textarea class="form-control" placeholder="Описание" id="description" style="height: 100px"></textarea>
-              <label for="description">Введите описание</label>
+              <textarea class="form-control" id="name" style="height: 100px" placeholder="Введите новое название"></textarea>
             </div>
           </div>
         </div>
         <div class="row mb-5">
           <div class="col">
-            <p>Варианты</p>
+            <p>Изменить описание: </p>
           </div>
           <div class="col">
-            {%for variant in votevariants%}
-              {% if variant.voting_id == 1%} <!--id?-->
+            <div class="form-floating">
+              <textarea class="form-control" id="description" style="height: 100px"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-5">
+          <div class="col">
+            <p>Измениь варианты: </p>
+          </div>
+          <div class="col">
+            {%for variant in votevariants %}
                 <div class="form-floating mb-3">
-                  <textarea class="form-control" placeholder="Вариант" id="variant{{ forloop.counter }}"></textarea>
-                  <label for="variant{{ forloop.counter }}">Вариант</label>
+                  <textarea class="form-control" id="variant{{ forloop.counter }}"></textarea>
+                  <label for="variant{{ forloop.counter }}">{{variant}}</label>
                 </div>
-              {% endif %}
             {% endfor %}
             <a href="">Добавить вариант</a>
           </div>
@@ -72,29 +72,29 @@
     <div class = "col-4">
       <div class="row mb-3">
         <div class="col">
-          <p>Дата начала</p>
+          <p>Дата начала:</p>
         </div>
         <div class="col">
           <div class="form-floating">
-            <input type="datetime-local" name="start_time" placeholder="Дата начала" class="form-control" id="startdate">
+            <input type="datetime-local" name="start_time" class="form-control" id="startdate">
             <label class="form-label">Дата начала</label>
           </div>
         </div>
       </div>
       <div class="row mb-5">
         <div class="col">
-          <p>Дата окончания</p>
+          <p>Дата окончания:</p>
         </div>
         <div class="col">
           <div class="form-floating">
-            <input type="datetime-local" name="start_time" placeholder="Дата окончания" class="form-control" id="enddate">
+            <input type="datetime-local" name="start_time" class="form-control" id="enddate">
             <label class="form-label">Дата конца</label>
           </div>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
-          <p>Вид голосования</p>
+          <p>Вид голосования:</p>
         </div>
         <div class = "col-5">
           <div class="dropdown">
@@ -132,10 +132,8 @@
       <div class="row mb-4">
         <input class="btn btn-primary btn-sm" onclick=dv() type="button" value="Удалить голосование">
       </div>
-      <div class="row mb-4">
-        <input class="btn btn-primary btn-sm" onclick=cn() type="button" value="Изменить название">
-      </div>
     </div>
+
     <div class="mb-5 row" align="center">
       <form id="MainForm" enctype="multipart/form-data" name="MainForm" method="post">
         {% csrf_token %}
