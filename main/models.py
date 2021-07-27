@@ -16,9 +16,23 @@ class Voting(models.Model):
     description = models.CharField(max_length=1000)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     type = models.IntegerField(choices=TYPE_CHOICES, default=CHECKBOXES)
-    published = models.DateTimeField(default=timezone.now)
-    finishes = models.DateTimeField(null=False)
+    published = models.DateTimeField(default=timezone.now, blank=False)
+    finishes = models.DateTimeField(blank=False)
     image = models.ImageField(upload_to='votings', blank=True, null=True)
+    next_voting = models.OneToOneField(
+        "Voting",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='following_voting'
+    )
+    prev_voting = models.OneToOneField(
+        "Voting",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='previous_voting'
+    )
 
     def __str__(self):
         return self.name

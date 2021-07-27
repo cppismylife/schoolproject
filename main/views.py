@@ -1,18 +1,15 @@
 import datetime
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, UpdateView
 from plotly.graph_objs import Figure, Pie
 from plotly.io import to_html
-
 from main.extra_func import get_forms, check_valid_and_create, check_eligible_to_vote
 from main.forms import InputForm, VotingContext, VoteOneOfTwoForm, \
     VoteOneOfManyForm, VoteManyOfManyForm, ProfileEditForm, \
@@ -30,6 +27,17 @@ def get_menu_context(auth=False):
         return [
             {'url_name': 'votings_list', 'name': 'Голосования'}
         ]
+
+
+class VotingEdit(LoginRequiredMixin, UpdateView):
+    template_name = 'pages/votingEdit.html'
+    model = Voting
+    form_class = VotingEditForm
+
+    def get_form_kwargs(self):
+        kwargs = super(VotingEdit, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
 @login_required()
@@ -75,12 +83,14 @@ def voting_edit(request, **kwargs):
                 if changed_field == 'name':
                     voting.name = vot.cleaned_data['name']
                 elif changed_field == "startdate":
-                    if timezone.now() >= parse_datetime(vot.changed_data['start_time']).astimezone() + datetime.timedelta(minutes=1):
+                    if timezone.now() >= parse_datetime(
+                        vot.changed_data['start_time']).astimezone() + datetime.timedelta(minutes=1):
                         context['errors'].append('Начало голосования должно быть не раньше текущего времени')
                     else:
                         voting.startdate = vot.cleaned_data["startdate"]
                 elif changed_field == "enddate":
-                    if parse_datetime(vot.changed_data['start_time']) >= parse_datetime(vot.changed_data['finish_time']):
+                    if parse_datetime(vot.changed_data['start_time']) >= parse_datetime(
+                        vot.changed_data['finish_time']):
                         context['errors'].append('Окончание голосования должно быть позже начала')
                     else:
                         voting.startdate = vot.cleaned_date['startdate']

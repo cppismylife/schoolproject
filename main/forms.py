@@ -1,5 +1,7 @@
+from cProfile import label
+
 from django import forms
-from django.contrib.auth import password_validation
+from django.contrib.auth import password_validation, get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.validators import validate_image_file_extension
@@ -115,48 +117,48 @@ class VoteManyOfManyForm(VoteForm):
     )
 
 
-class VotingEditForm(forms.Form):
-    startdate = forms.DateTimeField(
-
-        required=False,
-        widget=forms.DateTimeInput(
-            attrs={
-                'placeholder': 'Начало голосования',
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }
-        )
-    )
-    enddate = forms.DateTimeField(
-        required=False,
-        widget=forms.DateTimeInput(
-            attrs={
-                'placeholder': 'Начало голосования',
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }
-        )
-    )
-    name = forms.CharField(
-        min_length=1,
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'form': 'MainForm',
-            }
-        )
-    )
-    description = forms.CharField(
-        required=False,
-        widget=forms.TextInput(
-            attrs={
-                'class': 'form-control',
-                'form': 'MainForm',
-            }
-        )
-    )
+# class VotingEditForm(forms.Form):
+#     startdate = forms.DateTimeField(
+#
+#         required=False,
+#         widget=forms.DateTimeInput(
+#             attrs={
+#                 'placeholder': 'Начало голосования',
+#                 'class': 'form-control',
+#                 'type': 'datetime-local'
+#             }
+#         )
+#     )
+#     enddate = forms.DateTimeField(
+#         required=False,
+#         widget=forms.DateTimeInput(
+#             attrs={
+#                 'placeholder': 'Начало голосования',
+#                 'class': 'form-control',
+#                 'type': 'datetime-local'
+#             }
+#         )
+#     )
+#     name = forms.CharField(
+#         min_length=1,
+#         max_length=100,
+#         required=False,
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'form-control',
+#                 'form': 'MainForm',
+#             }
+#         )
+#     )
+#     description = forms.CharField(
+#         required=False,
+#         widget=forms.TextInput(
+#             attrs={
+#                 'class': 'form-control',
+#                 'form': 'MainForm',
+#             }
+#         )
+#     )
 
 
 class ProfileEditForm(forms.Form):
@@ -274,3 +276,15 @@ class VotingSearchForm(forms.Form):
         }),
         label=''
     )
+
+
+class VotingEditForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['next_voting'].queryset = get_user_model().objects.get(id=user.id).voting_set.all()
+
+    class Meta:
+        model = Voting
+        exclude = ['author']
+

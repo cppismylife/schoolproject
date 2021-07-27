@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}
+{{ pagename }}
+{% endblock %}
+
+{% block heading %}
+Редактировать Голосование
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-3">
+    <div class="container">
+      <form method="post">
+        {% csrf_token %}
+        {{form}}
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
