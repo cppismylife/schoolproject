@@ -1,12 +1,11 @@
-from cProfile import label
-
 from django import forms
-from django.contrib.auth import password_validation, get_user_model
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_image_file_extension
 from django_registration.forms import RegistrationForm
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from main.models import Voting
 
 
@@ -45,7 +44,7 @@ class VotingContext(forms.Form):
             attrs={
                 'placeholder': 'Начало голосования',
                 'class': 'form-control',
-                'type': 'datetime-local'
+                'type': 'datetime-local',
             }
         )
     )
@@ -282,9 +281,84 @@ class VotingEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['next_voting'].queryset = get_user_model().objects.get(id=user.id).voting_set.all()
+        self.fields['next_voting'].queryset = user.voting_set.all().exclude(id=self.instance.id)
+        self.fields['prev_voting'].queryset = user.voting_set.all().exclude(id=self.instance.id)
+        self.fields['next_voting'].error_messages.update({
+            'unique': f'Опрос с таким же полем "Следующий опрос" уже существует'
+        })
+        self.fields['prev_voting'].error_messages.update({
+            'unique': f'Опрос с таким же полем "Предыдущий опрос" уже существует'
+        })
+
+        self.fields['type'].choices = (
+            (0, 'Несколько ответов из нескольких вариантов'),
+            (1, 'Один ответ из нескольких вариантов'),
+            (2, 'Один ответ из двух вариантов')
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        next_voting = cleaned_data.get('next_voting')
+        prev_voting = cleaned_data.get('prev_voting')
+        finishes = cleaned_data.get('finishes')
+        self.fields['image'].upload_to = 'votings'
+        self.update_error_messages(next_voting, prev_voting)
+        self.check_errors(finishes, next_voting, prev_voting)
+
+    def update_error_messages(self, next_voting, prev_voting):
+        self.next_voting_unique(next_voting)
+        self.prev_voting_unique(prev_voting)
+
+    def next_voting_unique(self, next_voting):
+        if next_voting is not None:
+            try:
+                unique_voting = Voting.objects.get(next_voting=next_voting)
+                self.fields['next_voting'].error_messages.update({
+                    'unique': f'Опрос с таким же полем "Следующий опрос" уже существует('
+                              f'{unique_voting})'
+                })
+            except Voting.DoesNotExist:
+                pass
+
+    def prev_voting_unique(self, prev_voting):
+        if prev_voting is not None:
+            try:
+                unique_voting = Voting.objects.get(prev_voting=prev_voting)
+                self.fields['prev_voting'].error_messages.update({
+                    'unique': f'Опрос с таким же полем "Предыдущий опрос" уже существует('
+                              f'{unique_voting})'
+                })
+            except Voting.DoesNotExist:
+                pass
+
+    def check_errors(self, finishes, next_voting, prev_voting):
+        if next_voting is not None and prev_voting is not None:
+            if next_voting == prev_voting:
+                raise ValidationError('Следующий и предыдущий опросы не могут быть одинаковыми')
+        if finishes is None:
+            raise ValidationError('Укажите корректное время окончания опроса')
+        if finishes <= self.instance.published:
+            raise ValidationError(f'Окончание опроса долно быть не раньше его начала('
+                                  f'{self.instance.published.strftime("%Y-%m-%d %H:%M")}) и текущего времени')
 
     class Meta:
         model = Voting
-        exclude = ['author']
-
+        exclude = ['author', 'published']
+        widgets = {
+            'description': forms.Textarea(attrs={'class': "form-control", 'rows': "5"}),
+            'finishes': forms.DateTimeInput(attrs={
+                'placeholder': 'Окончание голосования',
+                'class': 'form-control',
+                'type': 'datetime-local'
+            }, format='%Y-%m-%dT%H:%M'),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control'})
+        },
+        labels = {
+            'name': 'Название',
+            'description': 'Описание',
+            'type': 'Тип',
+            'finishes': 'Время окончания',
+            'image': 'Изображение',
+            'next_voting': 'Следующий опрос',
+            'prev_voting': 'Предыдущий опрос'
+        }

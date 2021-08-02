@@ -1,49 +1,49 @@
-{% extends 'base/base.html' %} {% load bootstrap4 %}
+{% extends 'base/base.html' %} {% load bootstrap5 %}
 
 {% block title %}
-  {{ pagename }}
+{{ pagename }}
 {% endblock %}
 
 {% block content %}
-  <div class="container w-50">
-    <form method="POST">
-      {% csrf_token %}
-      <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between">
-          <div>
-            <h3 class="m-0">{{ voting.name }}</h3>
-          </div>
-          <div>
-            <a
-              href="/voting/{{voting.id}}/complain/"
-              role="button"
-              class="btn btn-sm btn-outline-danger"
-            >
-              Пожаловаться
-            </a>
-          </div>
+<div class="container w-50">
+  <form method="POST">
+    {% csrf_token %}
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between">
+        <div>
+          <h3 class="m-0">{{ voting.name }}</h3>
         </div>
-        <div class="card-body">
-          <p class="mb-4">{{ voting.description }}</p>
-          {% if voting.type == 2 %}
-            <div class="d-flex justify-content-around" >
-              {% for radio in form.choices %}
-                {{ radio.tag }}
-                <label
-                        class="btn w-50 p-3 mx-2 {% if forloop.counter0 %}btn-outline-danger{% else %} btn-outline-success{% endif %}"
-                        for="id_choices_{{ forloop.counter0 }}">
-                        {{radio.choice_label}}
-              </label>
-              {% endfor %}
-            </div>
-          {% else %}
-            {% bootstrap_form form %}
-          {% endif %}
+        <div>
+          <a
+            href="/voting/{{voting.id}}/complain/"
+            role="button"
+            class="btn btn-sm btn-outline-danger"
+          >
+            Пожаловаться
+          </a>
         </div>
       </div>
-      <button type="submit" class="btn p-2 btn-primary w-100 mb-2">
-        Проголосовать
-      </button>
-    </form>
-  </div>
+      <div class="card-body">
+        <p class="mb-4">{{ voting.description }}</p>
+        {% if voting.type == 2 %}
+        <div class="d-flex justify-content-around">
+          {% for radio in form.choices %}
+          {{ radio.tag }}
+          <label
+            class="btn w-50 p-3 mx-2 {% if forloop.counter0 %}btn-outline-danger{% else %} btn-outline-success{% endif %}"
+            for="id_choices_{{ forloop.counter0 }}">
+            {{radio.choice_label}}
+          </label>
+          {% endfor %}
+        </div>
+        {% else %}
+        {% bootstrap_form form %}
+        {% endif %}
+      </div>
+    </div>
+    <button type="submit" class="btn p-2 btn-primary w-100 mb-2">
+      Проголосовать
+    </button>
+  </form>
+</div>
 {% endblock %}

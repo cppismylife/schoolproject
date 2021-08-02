@@ -13,7 +13,7 @@
   <div class="row g-3">
     <div class="col">
       <div class="container">
-        {% if user.profile.profile_image == null %}
+        {% if user.profile.profile_image == '' %}
           <img src="{% static '/main/No-image.png' %}" class="img-fluid">
         {% else %}
           <img src="/media/{{ user.profile.profile_image }}" class="img-fluid">

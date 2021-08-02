@@ -30,7 +30,9 @@
               <div class="form-group">
                 <label class="form-label fs-3"> {{ item.label }} </label>
                 <div>{{ item }}</div>
-                <div class="mb-3"> {{ item.help_text }}</div>
+                {% if form.errors %}
+                  <div class="mb-3"> {{ item.help_text }}</div>
+                {% endif %}
               </div>
             {% endfor %}
           </div>

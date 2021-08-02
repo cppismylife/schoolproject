@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -14,24 +14,24 @@ class Voting(models.Model):
     )
     name = models.CharField(max_length=200, blank=False)
     description = models.CharField(max_length=1000)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.PROTECT)
     type = models.IntegerField(choices=TYPE_CHOICES, default=CHECKBOXES)
     published = models.DateTimeField(default=timezone.now, blank=False)
     finishes = models.DateTimeField(blank=False)
-    image = models.ImageField(upload_to='votings', blank=True, null=True)
+    image = models.ImageField(upload_to='votings', blank=True)
     next_voting = models.OneToOneField(
         "Voting",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
-        related_name='following_voting'
+        related_name='following_voting',
     )
     prev_voting = models.OneToOneField(
         "Voting",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
-        related_name='previous_voting'
+        related_name='previous_voting',
     )
 
     def __str__(self):
@@ -47,7 +47,7 @@ class VoteVariant(models.Model):
 
 
 class VoteFact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     variants = models.ManyToManyField(VoteVariant)
     created = models.DateTimeField(default=timezone.now)
 
@@ -68,7 +68,7 @@ class Complaint(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    profile_image = models.ImageField(upload_to='users', blank=True, null=True)
+    profile_image = models.ImageField(upload_to='users', blank=True)
 
 
 # hook to create UserProfile when creating User

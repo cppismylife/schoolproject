@@ -13,7 +13,7 @@
   <div class="row">
     <div class="col-3">
       <div class="container">
-        {% if voting.image == null %}
+        {% if voting.image == '' %}
           <img src="{% static 'main/No-image.png' %}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
         {% else %}
           <img src="/media/{{ voting.image }}" class="card-img-top shadow mt-3 bg-white rounded mx-auto" style="width: 50%;">
@@ -103,8 +103,8 @@
               Тип голосования
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li class="dropdown-item" >Многие из многих</li>
-              <li class="dropdown-item" >Один из многих</li>
+              <li class="dropdown-item" >Несколько ответов</li>
+              <li class="dropdown-item" >Один </li>
               <li class="dropdown-item" >Один из двух</li>
             </ul>
           </div>

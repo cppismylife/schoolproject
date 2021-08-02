@@ -22,23 +22,23 @@ def check_valid_and_create(context, forms, request, voteinfo):
             flag = False
     if flag and voteinfo.is_valid() and \
         timezone.now() < \
-        parse_datetime(voteinfo.data['start_time']).astimezone() + datetime.timedelta(minutes=1) < \
-        parse_datetime(voteinfo.data['finish_time']).astimezone() + datetime.timedelta(minutes=1):
+        parse_datetime(voteinfo.data['start_time']).astimezone() + datetime.timedelta(minutes=3) < \
+        parse_datetime(voteinfo.data['finish_time']).astimezone() + datetime.timedelta(minutes=3):
         try:
             voting = Voting(author=request.user,
-                            name=voteinfo.data['name'],
-                            description=voteinfo.data['desc'],
+                            name=voteinfo.cleaned_data['name'],
+                            description=voteinfo.cleaned_data['desc'],
                             type=int(context['type_of']) - 1,
                             image=voteinfo.files['image'],
-                            published=voteinfo.data['start_time'],
-                            finishes=voteinfo.data['finish_time'])
-        except:
+                            published=voteinfo.cleaned_data['start_time'],
+                            finishes=voteinfo.cleaned_data['finish_time'])
+        except KeyError:
             voting = Voting(author=request.user,
-                            name=voteinfo.data['name'],
-                            description=voteinfo.data['desc'],
+                            name=voteinfo.cleaned_data['name'],
+                            description=voteinfo.cleaned_data['desc'],
                             type=int(context['type_of']) - 1,
-                            published=voteinfo.data['start_time'],
-                            finishes=voteinfo.data['finish_time'])
+                            published=voteinfo.cleaned_data['start_time'],
+                            finishes=voteinfo.cleaned_data['finish_time'])
         voting.save()
         context['v_id'] = voting.id
         for i in range(1, context['accordion_context'][context['type_of']]['count'] + 1):

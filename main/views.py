@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.generic import TemplateView, FormView, UpdateView
@@ -27,17 +28,6 @@ def get_menu_context(auth=False):
         return [
             {'url_name': 'votings_list', 'name': 'Голосования'}
         ]
-
-
-class VotingEdit(LoginRequiredMixin, UpdateView):
-    template_name = 'pages/votingEdit.html'
-    model = Voting
-    form_class = VotingEditForm
-
-    def get_form_kwargs(self):
-        kwargs = super(VotingEdit, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
 
 
 @login_required()
@@ -293,17 +283,17 @@ def create_voting_page(request):
         'nums': [0, 1, 2],
         'create': int(request.POST.get('create', 0)),
         'accordion_context': {
-            '1': {'name': 'Голосование "Многие из многих"',
+            '1': {'name': 'Голосование "Несколько ответов из нескольких вариантов"',
                   'number': 'One',
                   'count': max(int(request.POST.get('count1', 2)), 2),
                   'forms': list(),
                   },
-            '2': {'name': 'Голосование "Один из многих"',
+            '2': {'name': 'Голосование "Один из ответ из нескольких вариантов"',
                   'number': 'Two',
                   'count': max(int(request.POST.get('count2', 2)), 2),
                   'forms': list(),
                   },
-            '3': {'name': 'Голосование "Один из двух"',
+            '3': {'name': 'Голосование "Один ответ из двух вариантов"',
                   'number': 'Three',
                   'count': max(int(request.POST.get('count3', 2)), 2),
                   'forms': list(),
@@ -333,7 +323,7 @@ def create_voting_page(request):
                 context['errors'].append('Неправильное время окончания голосования')
         if voteinfo.is_valid():
             if timezone.now() >= parse_datetime(voteinfo.data['start_time']).astimezone() + datetime.timedelta(
-                minutes=1):
+                minutes=3):
                 context['errors'].append('Начало голосования должно быть не раньше текущего времени')
             if parse_datetime(voteinfo.data['start_time']) >= parse_datetime(voteinfo.data['finish_time']):
                 context['errors'].append('Окончание голосования должно быть позже начала')
@@ -469,6 +459,29 @@ class VotingSearch(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(VotingSearch, self).get_context_data(**kwargs)
-        context['pagename'] = 'Найти голосование'
+        context['pagename'] = 'Найти опрос'
         context['menu'] = get_menu_context(self.request.user.is_authenticated)
         return context
+
+
+class VotingEdit(LoginRequiredMixin, UpdateView):
+    template_name = 'pages/votingEdit.html'
+    model = Voting
+    form_class = VotingEditForm
+
+    def get_form_kwargs(self):
+        kwargs = super(VotingEdit, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('voting_page', kwargs={'id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        if self.request.user == get_object_or_404(Voting, id=self.kwargs['pk']).author:
+            context = super().get_context_data(**kwargs)
+            context['pagename'] = 'Редактировать опрос'
+            context['menu'] = get_menu_context(self.request.user.is_authenticated)
+            return context
+        else:
+            raise PermissionDenied()

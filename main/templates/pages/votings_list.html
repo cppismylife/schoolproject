@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block title %}
   {{ pagename }}
@@ -9,19 +10,23 @@
 {% endblock %}
 
 {% block content %}
-  {%if not votings%}
+  {% if not votings %}
   <p align="center">
     <h2> Пока нет голосований </h2>
   </p>
-  {%endif%}
-  {%for voting in votings%}
+  {% endif %}
+  {% for voting in votings %}
     <div class="row">
 
       <div class="col-sm-1 g-5">
         <p></p>
       </div>
       <div class="col-sm-4 g-5">
+        {% if voting.image == '' %}
+        <img src="{% static 'main/No-image.png' %}" class="img-fluid" alt="Image">
+        {% else %}
         <img src="/media/{{voting.image.name}}" class="img-fluid" alt="Image">
+        {% endif %}
       </div>
 
       <div class="col-sm-7 g-5">
