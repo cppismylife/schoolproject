@@ -9,7 +9,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.views.generic import TemplateView, FormView, UpdateView
-from plotly.graph_objs import Figure, Pie
+from plotly.graph_objs import Figure, Pie, Bar
+from plotly.subplots import make_subplots
 from plotly.io import to_html
 from main.extra_func import get_forms, check_valid_and_create, check_eligible_to_vote
 from main.forms import InputForm, VotingContext, VoteOneOfTwoForm, \
@@ -163,11 +164,25 @@ class VotingResults(VotingPage):
 
     @staticmethod
     def create_chart(facts: dict):
-        fig = Figure(data=
-                     Pie(values=list(facts.values()),
-                         labels=list(facts.keys()),
-                         textposition="auto")
-                     )
+        fig = make_subplots(rows=1, cols=2, specs=[
+            [{'type': 'xy'}, {'type': 'domain'}]
+        ])
+        fig.add_bar(
+            row=1, col=1,
+            x=list(facts.keys()),
+            y=list(facts.values()),
+            name='',
+            showlegend=False,
+            y0=0
+        )
+        fig.add_pie(
+            row=1, col=2,
+            values=list(facts.values()),
+            labels=list(facts.keys()),
+            textposition="auto",
+            name=''
+        )
+
         return to_html(fig, full_html=False, include_plotlyjs='cdn')
 
 

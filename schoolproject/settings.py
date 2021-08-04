@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'bootstrap5',
     'main',
+    'django.forms'
 ]
 
 MIDDLEWARE = [
@@ -107,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'ru-ru'
-# LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Moscow'
 
@@ -144,3 +144,5 @@ EMAIL_HOST_USER = 'onlinegolosa@gmail.com'
 EMAIL_HOST_PASSWORD = 'jwwkbuunvkobtqur'
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'

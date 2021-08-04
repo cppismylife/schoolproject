@@ -277,6 +277,10 @@ class VotingSearchForm(forms.Form):
     )
 
 
+class CustomClearableFileInput(forms.ClearableFileInput):
+    template_name = 'widgets/clearable_file_input.html'
+
+
 class VotingEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -351,7 +355,7 @@ class VotingEditForm(forms.ModelForm):
                 'class': 'form-control',
                 'type': 'datetime-local'
             }, format='%Y-%m-%dT%H:%M'),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'})
+            'image': CustomClearableFileInput(attrs={'class': 'form-control'})
         },
         labels = {
             'name': 'Название',
