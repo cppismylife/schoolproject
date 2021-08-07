@@ -41,23 +41,24 @@
   <div class="card-body m-2 mb-0">
     <h3 style="text-align: justify">{{ voting.description }}</h3>
   </div>
+  {% block extra_info %}
+  {% endblock %}
   <div class="card-footer">
-    {% block extra_info %}
     <div class="d-flex bd-highlight align-items-center">
       <h2 class="bd-highlight text-primary mb-0">{{ voting.author }}</h2>
       <div class="d-flex flex-column mb-0 ms-auto">
         {% if today > voting.finishes %}
         <p class="bd-highlight m-0">Завершено: {{ voting.finishes }}</p>
         {% endif %}
-        <a href="/voting/{{ voting.id }}/results" class="bd-highlight m-0 btn btn-link p-0">Посмотреть результаты</a>
+        {% block results %}
+          <a href="/voting/{{ voting.id }}/results" class="bd-highlight m-0 btn btn-link p-0">Посмотреть результаты</a>
+        {% endblock %}
         {% if request.user == voting.author %}
         <p align="center" class="mb-0"><a href="/voting/{{voting.id}}/edit" class="btn btn-primary">Редактировать</a>
         </p>
         {% endif %}
       </div>
-
     </div>
-    {% endblock %}
   </div>
   {% if eligible_to_vote %}
   <a href="/voting/{{voting.id}}/vote" class="btn btn-primary btn-lg">Проголосовать</a>
