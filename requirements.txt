@@ -6,3 +6,4 @@ Django
 django-bootstrap-v5
 python-dotenv
 mysqlclient
+gunicorn
