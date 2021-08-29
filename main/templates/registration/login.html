@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container w-50">
+  <div class="container w-75">
       <form action="{{request.get_full_path}}" method="POST">
         {% csrf_token %}
         {% bootstrap_form form%}
