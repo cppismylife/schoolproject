@@ -19,27 +19,28 @@
           <img src="/media/{{ user.profile.profile_image }}" class="img-fluid">
         {% endif %}
 
-        {% if user == request.user%}
-        <a href="/profile_edit/">Редактировать профиль</a>
+        {% if user == request.user %}
+          <a href="/profile_edit/">Редактировать профиль</a>
 
-        {% if request.user.is_staff or request.user.is_superuser %}
-          <br>
-          <a href="/admin/">Перейти на страницу администратора</a>
-        {%endif%}
-        {% elif request.user.is_superuser and not user.is_superuser and not user.is_staff%}
-        <form method="post">
-          {% csrf_token %}
-          <button class="btn btn-secondary" type="submit" name="action" value="set_moder">Назначить модератора</button>
-        </form>
+          {% if request.user.is_staff or request.user.is_superuser %}
+            <br>
+            <a href="/admin/">Перейти на страницу администратора</a>
+          {% endif %}
+        {% elif request.user.is_superuser and not user.is_superuser and not user.is_staff %}
+          <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-secondary" type="submit" name="action" value="set_moder">Назначить модератора
+            </button>
+          </form>
 
         {% elif request.user.is_superuser and user.is_staff and not user.is_superuser %}
-        <form method="post">
-          {% csrf_token %}
-          <button class="btn btn-secondary" type="submit" name="action" value="reset_moder">Снять модератора</button>
-        </form>
+          <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-secondary" type="submit" name="action" value="reset_moder">Снять модератора</button>
+          </form>
 
 
-        {%endif%}
+        {% endif %}
       </div>
     </div>
 
@@ -47,44 +48,37 @@
       <div class="container">
         <dl class="row">
           <dt class="col-md-auto">Имя:</dt>
-          <dd class="col-md-auto">{{user.username}}</dd>
+          <dd class="col-md-auto">{{ user.username }}</dd>
         </dl>
         <dl class="row">
           <dt class="col-md-auto">Email:</dt>
-          <dd class="col-md-auto">{{user.email}}</dd>
+          <dd class="col-md-auto">{{ user.email }}</dd>
         </dl>
         <br>
         <dl class="row">
           <dt class="col-md-auto">Количество созданных голосований:</dt>
-          <dd class="col-md-auto">{{votings.count}}</dd>
+          <dd class="col-md-auto">{{ votings.count }}</dd>
         </dl>
         <dl class="row">
           <dt class="col-md-auto">Количество голосов:</dt>
-          <dd class="col-md-auto">{{votes.count}}</dd>
-        </dl>
-        <dl class="row">
-          <dt class="col-md-auto">Количество жалоб:</dt>
-          <dd class="col-md-auto">{{complaints.count}}</dd>
+          <dd class="col-md-auto">{{ votes.count }}</dd>
         </dl>
       </div>
     </div>
     <div class="col">
       <div class="container">
         <dl class="row">
-          <a href="{% url 'votings_list' %}?user={{user.id}}">
+          <a href="{% url 'votings_list' %}?user={{ user.id }}">
             <button class="btn btn-secondary" type="button">Созданные голосования</button>
           </a>
         </dl>
         <dl class="row">
           <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-              Жалобы
-            </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {%for com in complaints%}
-              <li><a class="dropdown-item" href="{% url 'complaint' com.id %}">Голосование '{{com.voting.name}}'</a></li>
-              {%endfor%}
+              {% for com in complaints %}
+                <li><a class="dropdown-item" href="{% url 'complaint' com.id %}">Голосование '{{ com.voting.name }}'</a>
+                </li>
+              {% endfor %}
             </ul>
           </div>
         </dl>
@@ -96,7 +90,8 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
               {% for vote in votes %}
-              <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">Голосование '{{vote.variants.first.voting.name}}'</a></li>
+                <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">Голосование
+                  '{{ vote.variants.first.voting.name }}'</a></li>
               {% endfor %}
             </ul>
           </div>

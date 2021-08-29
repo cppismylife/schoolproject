@@ -6,14 +6,16 @@
 
 {% block extra_info %}
   <hr />
-  <div style="width: 50%" class="mx-auto">
+  <div style="width: 50%" class="mx-auto mb-3">
     <ul class="list-group">
       {% for key, value in facts.items %}
         <li class="fs-4 card-text list-group-item">{{ key }} - {{ value }}</li>
       {% endfor %}
     </ul>
   </div>
-  <hr />
+  {% if plotly %}
+    <hr class="mt-0"/>
+  {% endif %}
   {{ plotly|safe }}
 {% endblock %}
 

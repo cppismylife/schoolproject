@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
-from .models import Voting, VoteVariant, VoteFact, Complaint
+from .models import Voting, VoteVariant, VoteFact
+
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'first_name',
@@ -31,9 +32,3 @@ class VoteFactAdmin(admin.ModelAdmin):
     @staticmethod
     def variants_str(obj):
         return ', \n'.join([p.description for p in obj.variants.all()])
-
-
-@admin.register(Complaint)
-class ComplaintAdmin(admin.ModelAdmin):
-    list_display = ('id', 'voting', 'author', 'description',
-                     'status', 'created')

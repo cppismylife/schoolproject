@@ -10,18 +10,15 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-4 offset-4">
+  <div class="container w-50">
       <form action="{{request.get_full_path}}" method="POST">
         {% csrf_token %}
-
-        {% bootstrap_form form %}
+        {% bootstrap_form form%}
         {% buttons %}
         <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
         {% endbuttons %}
       </form>
       <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
-    </div>
   </div>
 {% endblock %}
 

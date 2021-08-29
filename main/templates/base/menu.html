@@ -31,12 +31,13 @@
         <ul class="navbar-nav mb-2 mb-md-0 ml-auto justify-content-center">
           {% if request.user.is_authenticated %}
 
-          <li class="nav-item active">
-            <a class="nav-link" aria-current="page" href="/logout">Выйти</a>
-          </li>
           <li class="nav-item active ">
             <a class="nav-link" aria-current="page" href="/profile/{{ request.user.id }}">Профиль</a>
           </li>
+          <li class="nav-item active">
+            <a class="nav-link" aria-current="page" href="/logout">Выйти</a>
+          </li>
+
 
           {% else %}
 

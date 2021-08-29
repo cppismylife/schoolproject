@@ -1,22 +1,22 @@
 {% extends 'base/base.html' %}
+{% load bootstrap5 %}
 
 {% block title %}
   {{ pagename }}
 {% endblock %}
 
 {% block heading %}
-  Найти голосование
+  Найти опрос
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-5 text-center">
   <form method="post">
     {% csrf_token %}
-    {{ form }}
-    <button class="btn btn-success mt-4 btn-lg" type="submit">Найти</button>
+    {% bootstrap_form form %}
+    {% buttons %}
+      <button class="btn btn-success form-control text-center fs-5 mt-3" type="submit" style="width: 50%">Найти</button>
+    {% endbuttons %}
   </form>
-  {% if error %}
-    <h3 class="text-danger mt-4>{{error}}</h3>
-  {% endif %}
 </div>
 {% endblock %}

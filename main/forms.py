@@ -1,12 +1,14 @@
 from django import forms
 from django.contrib.auth import password_validation
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_image_file_extension
 from django_registration.forms import RegistrationForm
 from django.utils.translation import gettext_lazy as _
 from main.models import Voting
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend, UserModel
 
 
 class InputForm(forms.Form):
@@ -29,20 +31,34 @@ class VotingContext(forms.Form):
         min_length=1,
         max_length=100,
         required=True,
-        label='Название голосования',
+        label='Название опроса',
         widget=forms.TextInput(
             attrs={
-                'placeholder': 'Название голосования',
+                'placeholder': 'Название опроса',
                 'class': 'form-control',
             }
         )
     )
+
+    desc = forms.CharField(
+        min_length=1,
+        max_length=200,
+        required=True,
+        label='Описание опроса',
+        widget=forms.Textarea(
+            attrs={
+                'placeholder': 'Описание опроса',
+                'class': 'form-control',
+            }
+        )
+    )
+
     start_time = forms.DateTimeField(
         required=True,
-        label='Начало голосования',
+        label='Начало опроса',
         widget=forms.DateTimeInput(
             attrs={
-                'placeholder': 'Начало голосования',
+                'placeholder': 'Начало опроса',
                 'class': 'form-control',
                 'type': 'datetime-local',
             }
@@ -50,10 +66,10 @@ class VotingContext(forms.Form):
     )
     finish_time = forms.DateTimeField(
         required=True,
-        label='Окончание голосования',
+        label='Окончание опроса',
         widget=forms.DateTimeInput(
             attrs={
-                'placeholder': 'Окончание голосования',
+                'placeholder': 'Окончание опроса',
                 'class': 'form-control',
                 'type': 'datetime-local'
             }
@@ -65,18 +81,6 @@ class VotingContext(forms.Form):
         widget=forms.ClearableFileInput(
             attrs={
                 'class': 'form-control'
-            }
-        )
-    )
-    desc = forms.CharField(
-        min_length=1,
-        max_length=200,
-        required=True,
-        label='Описание голосования',
-        widget=forms.Textarea(
-            attrs={
-                'placeholder': 'Описание голосования',
-                'class': 'form-control',
             }
         )
     )
@@ -114,50 +118,6 @@ class VoteManyOfManyForm(VoteForm):
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
     )
-
-
-# class VotingEditForm(forms.Form):
-#     startdate = forms.DateTimeField(
-#
-#         required=False,
-#         widget=forms.DateTimeInput(
-#             attrs={
-#                 'placeholder': 'Начало голосования',
-#                 'class': 'form-control',
-#                 'type': 'datetime-local'
-#             }
-#         )
-#     )
-#     enddate = forms.DateTimeField(
-#         required=False,
-#         widget=forms.DateTimeInput(
-#             attrs={
-#                 'placeholder': 'Начало голосования',
-#                 'class': 'form-control',
-#                 'type': 'datetime-local'
-#             }
-#         )
-#     )
-#     name = forms.CharField(
-#         min_length=1,
-#         max_length=100,
-#         required=False,
-#         widget=forms.TextInput(
-#             attrs={
-#                 'class': 'form-control',
-#                 'form': 'MainForm',
-#             }
-#         )
-#     )
-#     description = forms.CharField(
-#         required=False,
-#         widget=forms.TextInput(
-#             attrs={
-#                 'class': 'form-control',
-#                 'form': 'MainForm',
-#             }
-#         )
-#     )
 
 
 class ProfileEditForm(forms.Form):
@@ -224,20 +184,6 @@ class ProfileEditForm(forms.Form):
     )
 
 
-class ComplaintCreateForm(forms.Form):
-    description = forms.CharField(
-        required=True,
-        label='',
-        widget=forms.Textarea(
-            attrs={
-                'placeholder': 'Опишите вашу жалобу',
-                'class': 'form-control',
-                'style': 'width: 100%'
-            }
-        )
-    )
-
-
 class CustomRegistrationForm(RegistrationForm):
     password1 = forms.CharField(
         label=_("Password"),
@@ -266,22 +212,39 @@ class CustomRegistrationForm(RegistrationForm):
 
 
 class VotingSearchForm(forms.Form):
+    def clean(self):
+        cleaned_data = super(VotingSearchForm, self).clean()
+        voting_id = cleaned_data.get('voting_id')
+        try:
+            Voting.objects.get(id=voting_id)
+        except Voting.DoesNotExist:
+            raise ValidationError('Опроса с таким ID не существует')
+
     voting_id = forms.IntegerField(
         widget=forms.NumberInput(attrs={
             'class': "form-control",
-            'placeholder': "Введите номер голосования",
-            'style': "height: 7vh; font-size: 1.2rem;",
+            'placeholder': "Введите ID опроса",
+            'style': "height: 4vh; font-size: 1.2rem;",
             'required': 'true'
         }),
         label=''
     )
 
 
-class CustomClearableFileInput(forms.ClearableFileInput):
-    template_name = 'widgets/clearable_file_input.html'
-
-
 class VotingEditForm(forms.ModelForm):
+    description = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': "5"}
+    ), label='Описание')
+    finishes = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={
+                'placeholder': 'Окончание голосования',
+                'type': 'datetime-local'
+            },
+            format='%Y-%m-%dT%H:%M'),
+        label='Время окончания'
+    )
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
@@ -293,7 +256,6 @@ class VotingEditForm(forms.ModelForm):
         self.fields['prev_voting'].error_messages.update({
             'unique': f'Опрос с таким же полем "Предыдущий опрос" уже существует'
         })
-
         self.fields['type'].choices = (
             (0, 'Несколько ответов из нескольких вариантов'),
             (1, 'Один ответ из нескольких вариантов'),
@@ -305,7 +267,6 @@ class VotingEditForm(forms.ModelForm):
         next_voting = cleaned_data.get('next_voting')
         prev_voting = cleaned_data.get('prev_voting')
         finishes = cleaned_data.get('finishes')
-        self.fields['image'].upload_to = 'votings'
         self.update_error_messages(next_voting, prev_voting)
         self.check_errors(finishes, next_voting, prev_voting)
 
@@ -342,27 +303,43 @@ class VotingEditForm(forms.ModelForm):
         if finishes is None:
             raise ValidationError('Укажите корректное время окончания опроса')
         if finishes <= self.instance.published:
-            raise ValidationError(f'Окончание опроса долно быть не раньше его начала('
+            raise ValidationError(f'Окончание опроса должно быть не раньше его начала('
                                   f'{self.instance.published.strftime("%Y-%m-%d %H:%M")}) и текущего времени')
 
     class Meta:
         model = Voting
         exclude = ['author', 'published']
-        widgets = {
-            'description': forms.Textarea(attrs={'class': "form-control", 'rows': "5"}),
-            'finishes': forms.DateTimeInput(attrs={
-                'placeholder': 'Окончание голосования',
-                'class': 'form-control',
-                'type': 'datetime-local'
-            }, format='%Y-%m-%dT%H:%M'),
-            'image': CustomClearableFileInput(attrs={'class': 'form-control'})
-        },
         labels = {
             'name': 'Название',
-            'description': 'Описание',
             'type': 'Тип',
-            'finishes': 'Время окончания',
             'image': 'Изображение',
             'next_voting': 'Следующий опрос',
             'prev_voting': 'Предыдущий опрос'
         }
+
+
+class EmailBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, **kwargs):
+        try:
+            user = UserModel.objects.get(email=username)
+        except UserModel.DoesNotExist:
+            return None
+        else:
+            if user.check_password(password):
+                return user
+        return None
+
+
+class CustomUserLoginForm(AuthenticationForm):
+    username = forms.EmailField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': ''}
+        ),
+        label='Email'
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': ''}
+        ),
+        label='Пароль'
+    )

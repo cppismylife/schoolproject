@@ -6,46 +6,51 @@
 {% endblock %}
 
 {% block heading %}
-  Голосования
+  Мои опросы
 {% endblock %}
 
 {% block content %}
   {% if not votings %}
-  <p align="center">
+    <p align="center">
     <h2> Пока нет голосований </h2>
-  </p>
+    </p>
   {% endif %}
   {% for voting in votings %}
-    <div class="row">
-
-      <div class="col-sm-1 g-5">
-        <p></p>
-      </div>
-      <div class="col-sm-4 g-5">
-        {% if voting.image == '' %}
-        <img src="{% static 'main/No-image.png' %}" class="img-fluid" alt="Image">
-        {% else %}
-        <img src="/media/{{voting.image.name}}" class="img-fluid" alt="Image">
-        {% endif %}
-      </div>
-
-      <div class="col-sm-7 g-5">
-        <div class="card border-dark">
-          <div class="card-header">
-            <h1>{{voting.name}}</h1>
-          </div>
-          <div class="card-body">
-            <h5 class="card-text">{{voting.description}}</h5>
-            <p align="right"><a href="/voting/{{voting.id}}" class="btn btn-primary ">Просмотреть</a></p>
-            <div class="card-footer">
-              <p class="card-text"><small class="text-muted">
-                Начало: {{voting.published}} <br>
-                Окончание: {{voting.finishes}}
-              </small></p>
-            </div>
+    <div class="card border-dark container p-0 mb-5">
+      <div class="card-header">
+        <div class="flex d-flex bd-highlight align-items-center">
+          <h1 class="bd-highlight card-title text-break fs-3 me-auto">{{ voting.name }}</h1>
+          <div class="ms-auto d-flex bd-highlight justify-content-center align-items-center flex-wrap">
+        <span class="me-2">
+          {% if today < voting.published %}
+            <span class="badge bg-secondary fs-6">Не началось</span>
+          {% elif today > voting.published and today < voting.finishes %}
+            <span class="badge bg-primary fs-6">В прогрессе</span>
+          {% elif today > voting.finishes %}
+            <span class="badge bg-success fs-6">Завершено</span>
+          {% endif %}
+        </span>
+            <p class="mb-0 text-primary fs-2 fw-bold">ID: {{ voting.id }}</p>
           </div>
         </div>
       </div>
+      <div class="card-body">
+        <h5 class="card-text text-break">{{ voting.description }}</h5>
+      </div>
+      <div class="flex card-footer d-flex align-items-center justify-content-between">
+        <p class="card-text mb-0">
+          <small class="text-muted">
+            Начало: {{ voting.published }}
+            <br>
+            Окончание: {{ voting.finishes }}
+          </small>
+        </p>
+        <p align="right" class="mb-0 view"><a href="/voting/{{ voting.id }}" class="btn btn-primary ">Просмотреть</a>
+        </p>
+      </div>
     </div>
   {% endfor %}
+{% endblock %}
+
+{% block scripts %}
 {% endblock %}

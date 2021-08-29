@@ -23,7 +23,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # base
-from main.forms import CustomRegistrationForm
+from main.forms import CustomRegistrationForm, CustomUserLoginForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,15 +38,14 @@ urlpatterns += [
     path('voting/<int:pk>/edit/', views.VotingEdit.as_view(), name='voting_edit'),
     path('voting/<int:id>/vote/', views.vote_page, name='vote'),
     path('voting/<int:id>/results/', views.VotingResults.as_view(), name='results_page'),
-    path('voting/<int:id>/complain/', views.ComplaintCreate.as_view(), name='create_complaint'),
-    path('voting_search/', views.VotingSearch.as_view(), name='voting_search')
+    path('voting_search/', views.VotingSearch.as_view(), name='voting_search'),
+    path('voting/<int:pk>/delete', views.VotingDeleteView.as_view(), name='voting_delete')
 ]
 
 # profile
 urlpatterns += [
     path('profile_edit/', views.profile_edit_page, name='profile_edit'),
     path('profile/<int:id>/', views.profile_page, name='profile'),
-    path('complaint/<int:id>/', views.complaint_page, name='complaint'),
 ]
 
 # password_reset
@@ -103,15 +102,16 @@ urlpatterns += [
          RegistrationView.as_view(
              form_class=CustomRegistrationForm,
              success_url=reverse('index')
-         ), name='django_registration_register',),
+         ), name='django_registration_register', ),
     path('accounts/', include('django_registration.backends.one_step.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', auth_views.LoginView.as_view(
-             extra_context={
-                 'menu': views.get_menu_context(),
-                 'pagename': 'Авторизация'
-             }
-         ), name='login'),
+        extra_context={
+            'menu': views.get_menu_context(),
+            'pagename': 'Авторизация'
+        },
+        authentication_form=CustomUserLoginForm
+    ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
