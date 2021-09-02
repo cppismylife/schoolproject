@@ -292,8 +292,7 @@ def profile_edit_page(request):
 @login_required()
 def profile_page(request, id):
     if request.user.id != id and not request.user.is_superuser and not request.user.is_staff:
-        raise PermissionDenied('can not view this profile')
-
+        raise PermissionDenied('Вы не можете просматривать профиль этого пользователя')
     context = {
         'menu': get_menu_context(request.user.is_authenticated),
         'pagename': 'Профиль'
@@ -301,17 +300,6 @@ def profile_page(request, id):
     user = get_object_or_404(User, id=id)
     votings = user.voting_set.all()
     votes = user.votefact_set.all()
-
-    if request.method == 'POST':
-        if request.user.is_superuser:
-            if request.POST.get('action', None) == 'set_moder':
-                user.is_staff = True
-                user.save()
-            elif request.POST.get('action', None) == 'reset_moder':
-                user.is_staff = False
-                user.save()
-        else:
-            raise PermissionDenied
     context['votings'] = votings
     context['votes'] = votes
     context['user'] = user
@@ -354,7 +342,7 @@ class VotingEdit(LoginRequiredMixin, UpdateView):
         return reverse('voting_page', kwargs={'id': self.object.id})
 
     def get_context_data(self, **kwargs):
-        if self.request.user == get_object_or_404(Voting, id=self.kwargs['pk']).author:
+        if self.request.user == get_object_or_404(Voting, id=self.kwargs['pk']).author or self.request.user.is_staff or self.request.user.is_superuser:
             context = super().get_context_data(**kwargs)
             context['pagename'] = 'Редактировать опрос'
             context['menu'] = get_menu_context(self.request.user.is_authenticated)

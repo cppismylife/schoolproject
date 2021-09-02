@@ -20,26 +20,11 @@
         {% endif %}
 
         {% if user == request.user %}
-          <a href="/profile_edit/">Редактировать профиль</a>
-
+          <a href="/profile_edit/" class="btn btn-secondary mt-3">Редактировать профиль</a>
           {% if request.user.is_staff or request.user.is_superuser %}
             <br>
             <a href="/admin/">Перейти на страницу администратора</a>
           {% endif %}
-        {% elif request.user.is_superuser and not user.is_superuser and not user.is_staff %}
-          <form method="post">
-            {% csrf_token %}
-            <button class="btn btn-secondary" type="submit" name="action" value="set_moder">Назначить модератора
-            </button>
-          </form>
-
-        {% elif request.user.is_superuser and user.is_staff and not user.is_superuser %}
-          <form method="post">
-            {% csrf_token %}
-            <button class="btn btn-secondary" type="submit" name="action" value="reset_moder">Снять модератора</button>
-          </form>
-
-
         {% endif %}
       </div>
     </div>
