@@ -70,7 +70,7 @@
           {% block results %}
             <a href="/voting/{{ voting.id }}/results" class="res-button btn btn-success">Посмотреть результаты</a>
           {% endblock %}
-          {% if request.user == voting.author %}
+          {% if request.user == voting.author or request.user.is_superuser or request.user.is_staff %}
             <a href="/voting/{{ voting.id }}/edit" class="btn btn-secondary ms-2">Редактировать</a>
           {% endif %}
         </div>
