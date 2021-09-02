@@ -11,6 +11,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend, UserModel
 
 
+def file_size(value):
+    limit = 20 * 1024 * 1024
+    if value.size > limit:
+        raise ValidationError('Размер файла не должен превышать 20 Мб.')
+
+
 class InputForm(forms.Form):
     var = forms.CharField(
         min_length=1,
@@ -82,7 +88,8 @@ class VotingContext(forms.Form):
             attrs={
                 'class': 'form-control'
             }
-        )
+        ),
+        validators=[file_size]
     )
 
 
@@ -178,9 +185,7 @@ class ProfileEditForm(forms.Form):
                 'form': 'MainForm',
             },
         ),
-        validators=[
-            validate_image_file_extension
-        ],
+        validators=[file_size]
     )
 
 
@@ -261,6 +266,7 @@ class VotingEditForm(forms.ModelForm):
             (1, 'Один ответ из нескольких вариантов'),
             (2, 'Один ответ из двух вариантов')
         )
+        self.fields['image'].validators = [file_size]
 
     def clean(self):
         cleaned_data = super().clean()
