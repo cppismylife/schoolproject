@@ -21,7 +21,6 @@ ALLOWED_HOSTS = [
     '194.67.105.249',
     'www.onlinevotings.tk',
     'onlinevotings.tk',
-    '127.0.0.1'
 ]
 
 # Application definition
