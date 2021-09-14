@@ -8,15 +8,13 @@ class UserAdmin(admin.ModelAdmin):
                     'last_name', 'is_superuser', 'is_staff')
 
 
-# https://stackoverflow.com/questions/2552516/changing-user-modeladmin-for-django-admin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
 
 @admin.register(Voting)
 class VotingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'author',
-                    'type', 'published', 'finishes')
+    list_display = ('id', 'name', 'author', 'type', 'published', 'finishes', 'next_voting', 'prev_voting')
 
 
 @admin.register(VoteVariant)
