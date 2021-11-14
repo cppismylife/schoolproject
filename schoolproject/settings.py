@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,6 +23,9 @@ ALLOWED_HOSTS = [
     'www.onlinevotings.tk',
     'onlinevotings.tk',
 ]
+
+if DEBUG:
+    ALLOWED_HOSTS.append('127.0.0.1')
 
 # Application definition
 
@@ -148,4 +152,3 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
