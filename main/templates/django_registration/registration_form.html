@@ -30,8 +30,8 @@
               <div class="form-group">
                 <label class="form-label fs-3"> {{ item.label }} </label>
                 <div>{{ item }}</div>
-                {% if form.errors %}
-                  <div class="mb-3"> {{ item.help_text }}</div>
+                {% if item.errors %}
+                  <div class="mb-3"> {{ item.errors }}</div>
                 {% endif %}
               </div>
             {% endfor %}
@@ -39,7 +39,6 @@
         </div>
       </div>
     </div>
-
     <button
       type="submit"
       class="btn btn-primary float-right btn-block mt-4 mb-4"

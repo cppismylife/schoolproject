@@ -3,11 +3,9 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_image_file_extension
 from django_registration.forms import RegistrationForm
 from django.utils.translation import gettext_lazy as _
 from main.models import Voting
-from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend, UserModel
 
 
@@ -229,7 +227,7 @@ class VotingSearchForm(forms.Form):
         widget=forms.NumberInput(attrs={
             'class': "form-control",
             'placeholder': "Введите ID опроса",
-            'style': "height: 4vh; font-size: 1.2rem;",
+            'style': "font-size: 1.2rem;",
             'required': 'true'
         }),
         label=''
@@ -261,11 +259,6 @@ class VotingEditForm(forms.ModelForm):
         self.fields['prev_voting'].error_messages.update({
             'unique': f'Опрос с таким же полем "Предыдущий опрос" уже существует'
         })
-        self.fields['type'].choices = (
-            (0, 'Несколько ответов из нескольких вариантов'),
-            (1, 'Один ответ из нескольких вариантов'),
-            (2, 'Один ответ из двух вариантов')
-        )
         self.fields['image'].validators = [file_size]
 
     def clean(self):
@@ -314,10 +307,9 @@ class VotingEditForm(forms.ModelForm):
 
     class Meta:
         model = Voting
-        exclude = ['author', 'published']
+        exclude = ['author', 'published', 'type']
         labels = {
             'name': 'Название',
-            'type': 'Тип',
             'image': 'Изображение',
             'next_voting': 'Следующий опрос',
             'prev_voting': 'Предыдущий опрос'
