@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = bool(int(os.getenv('DEBUG', 0)))
 
 ALLOWED_HOSTS = [
-    '194.67.105.249',
+    '89.108.81.250',
     'www.onlinevotings.tk',
     'onlinevotings.tk',
 ]
