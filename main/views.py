@@ -71,7 +71,7 @@ class VotingResults(VotingPage):
         context['facts'] = facts
         context['pagename'] = 'Результаты голосования'
         if len([value for value in facts.values() if value]):
-            context['plotly'] = self.create_chart(facts)
+            context['plotly'] = self.create_chart(facts.copy())
         return context
 
     @staticmethod
@@ -86,6 +86,8 @@ class VotingResults(VotingPage):
 
     @staticmethod
     def create_chart(facts: dict):
+        zero_keys = [key for key, value in facts.items() if value == 0]
+        [facts.pop(key) for key in zero_keys]
         fig = make_subplots(rows=1, cols=2, specs=[
             [{'type': 'xy'}, {'type': 'domain'}]
         ])
