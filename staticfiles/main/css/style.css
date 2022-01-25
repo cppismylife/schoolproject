@@ -10,11 +10,16 @@
   margin-bottom: 10px;
  }
 
-.res-button{
+.res-button {
   margin-bottom: 7px;
 }
 
-@media(min-width: 500px) {
+.profile-image {
+  width: 100%;
+}
+
+
+@media(min-width: 576px) {
   .flex {
     flex-wrap: nowrap;
   }
@@ -23,6 +28,9 @@
   }
   .res-button{
     margin-bottom: 0;
+  }
+  .profile-image {
+    width: 75%;
   }
 }
 
@@ -37,6 +45,10 @@
   .image {
     max-width: 80%;
     max-height: 500px;
+  }
+
+  .profile-image {
+    width: 100%;
   }
 }
 

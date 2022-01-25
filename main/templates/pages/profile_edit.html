@@ -10,46 +10,44 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row g-3">
-    <div class="col">
-      <div class="container">
+  <div class="d-flex g-3 flex-column flex-lg-row w-100 fs-5">
+    <div class="container text-center mb-5">
+      <div class="mb-4">
         {% if user.profile.profile_image == '' %}
-          <img src="{% static '/main/No-image.png' %}" class="img-fluid">
+          <img src="{% static '/main/No-image.png' %}" class="shadow profile-image">
         {% else %}
-          <img src="/media/{{ user.profile.profile_image }}" class="img-fluid">
+          <img src="/media/{{ user.profile.profile_image }}" class="profile-image" style="max-height: 50vh; object-fit: contain">
         {% endif %}
-        {{form.profile_image}}
       </div>
+      {{ form.profile_image }}
     </div>
 
-    <div class="col">
+    <div class="container">
       <div class="container">
-        <div class="mb-5 row">
+        <div class="mb-4 row">
           <input class="btn btn-primary" onclick=cn() type="button" value="Изменить имя">
         </div>
-        <div class="mb-5 row">
+        <div class="mb-4 row">
           <input class="btn btn-primary" onclick=ce() type="button" value="Изменить почту">
         </div>
-        <div class="mb-5 row">
+        <div class="mb-4 row">
           <input class="btn btn-primary" onclick=cp() type="button" value="Сменить пароль">
         </div>
       </div>
-    </div>
 
-    <div class="col">
       <div class="container">
         {%if CN == 'change'%}
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">Имя:</label>
-          <div class="col-sm-10">
+        <div class="mb-3">
+          <label class="col-sm col-form-label">Имя:</label>
+          <div class="col-sm">
             {{form.name}}
           </div>
         </div>
         {%endif%}
 
         {%if CE == 'change'%}
-        <div class="mb-3 row">
-          <label class="col-sm-2 col-form-label">Email:</label>
+        <div class="mb-3">
+          <label class="col-sm col-form-label">Email:</label>
           <div class="col-sm">
             {{form.email}}
           </div>
@@ -57,21 +55,21 @@
         {%endif%}
 
         {%if CP == 'change'%}
-        <div class="mb-3 row">
+        <div class="mb-3">
           <label class="col-sm col-form-label">Старый пароль:</label>
           <div class="col-sm">
             {{form.OldPass}}
           </div>
         </div>
 
-        <div class="mb-3 row">
+        <div class="mb-3">
           <label class="col-sm col-form-label">Новый пароль:</label>
           <div class="col-sm">
             {{form.NewPass}}
           </div>
         </div>
 
-        <div class="mb-3 row">
+        <div class="mb-3">
           <label class="col-sm col-form-label">Повторите пароль:</label>
           <div class="col-sm">
             {{form.RepNewPass}}
@@ -80,15 +78,15 @@
         {%endif%}
 
         {%for er in errors%}
-        <div class="mb-3 row">
-          <span class="badge bg-danger">{{er}}</span>
-        </div>
+          <div class="mb-3">
+            <span class="badge bg-danger">{{er.0}}</span>
+          </div>
         {%endfor%}
       </div>
     </div>
-
   </div>
-  <div class="mb-5 row" align="center">
+
+  <div class="mt-5 row" align="center">
     <form id="MainForm" enctype="multipart/form-data" name="MainForm" method="post">
       {% csrf_token %}
       <input name="Create" type="hidden" value="0">
@@ -99,4 +97,13 @@
     </form>
   </div>
   <script src="{% static 'main/js/ProfileEdit.js' %}"></script>
+  <script>
+    function previewImage() {
+      let fileReader = new FileReader();
+      fileReader.readAsDataURL(document.getElementById("id_profile_image").files[0]);
+      fileReader.onload = (event) => {
+        document.querySelector(".profile-image").src = event.target.result;
+      }
+    }
+  </script>
 {% endblock %}

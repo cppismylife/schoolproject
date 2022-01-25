@@ -1,77 +1,72 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block title %}
-  {{ pagename }}
+{{ pagename }}
 {% endblock %}
 
 {% block heading %}
-  Профиль
+Профиль
 {% endblock %}
 
 {% block content %}
-  <div class="row g-3">
-    <div class="col">
-      <div class="container">
-
-        {% if user.profile.profile_image == '' %}
-          <img src="{% static '/main/No-image.png' %}" class="img-fluid">
-        {% else %}
-          <img src="/media/{{ user.profile.profile_image }}" class="img-fluid">
-        {% endif %}
-
-        {% if user == request.user %}
-          <a href="/profile_edit/" class="btn btn-secondary mt-3">Редактировать профиль</a>
-          {% if request.user.is_staff or request.user.is_superuser %}
-            <br>
-            <a href="/admin/">Перейти на страницу администратора</a>
-          {% endif %}
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="container">
-        <dl class="row">
-          <dt class="col-md-auto">Имя:</dt>
-          <dd class="col-md-auto">{{ user.username }}</dd>
-        </dl>
-        <dl class="row">
-          <dt class="col-md-auto">Email:</dt>
-          <dd class="col-md-auto">{{ user.email }}</dd>
-        </dl>
-        <br>
-        <dl class="row">
-          <dt class="col-md-auto">Количество созданных голосований:</dt>
-          <dd class="col-md-auto">{{ votings.count }}</dd>
-        </dl>
-        <dl class="row">
-          <dt class="col-md-auto">Количество голосов:</dt>
-          <dd class="col-md-auto">{{ votes.count }}</dd>
-        </dl>
-      </div>
-    </div>
-    <div class="col">
-      <div class="container">
-        <dl class="row">
-          <a href={% url 'votings_list' %}>
-            <button class="btn btn-secondary" type="button">Созданные голосования</button>
-          </a>
-        </dl>
-        <dl class="row">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-              Голоса
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-              {% for vote in votes %}
-                <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">Голосование
-                  '{{ vote.variants.first.voting.name }}'</a></li>
-              {% endfor %}
-            </ul>
-          </div>
-        </dl>
-      </div>
-    </div>
+<div class="d-flex g-3 flex-column flex-lg-row w-100 fs-5">
+  <div class="container text-center mb-3">
+    {% if user.profile.profile_image == '' %}
+    <img src="{% static '/main/No-image.png' %}" class="shadow img-fluid profile-image">
+    {% else %}
+    <img src="/media/{{ user.profile.profile_image }}" class="shadow img-fluid profile-image">
+    {% endif %}
   </div>
+
+  <div class="container">
+    <dl class="row text-break">
+      <dt class="col-md-auto">Имя:</dt>
+      <dd class="col-md-auto">{{ user.username }}</dd>
+    </dl>
+    <dl class="row text-break">
+      <dt class="col-md-auto">Email:</dt>
+      <dd class="col-md-auto">{{ user.email }}</dd>
+    </dl>
+    <br>
+    <dl class="row">
+      <dt class="col-md-auto">Количество созданных голосований:</dt>
+      <dd class="col-md-auto">{{ votings.count }}</dd>
+    </dl>
+    <dl class="row">
+      <dt class="col-md-auto">Количество голосов:</dt>
+      <dd class="col-md-auto">{{ votes.count }}</dd>
+    </dl>
+  </div>
+
+  <div class="container">
+    <dl class="row">
+      <a href="{% url 'votings_list' %}">
+        <button class="btn btn-secondary" type="button">Созданные голосования</button>
+      </a>
+    </dl>
+    <dl class="row">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                data-bs-toggle="dropdown" aria-expanded="false">
+          Голоса
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+          {% for vote in votes %}
+          <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">Голосование
+            '{{ vote.variants.first.voting.name }}'</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </dl>
+    <dl class="row">
+      {% if user == request.user %}
+        <a href="/profile_edit/"><button class="btn btn-secondary">Редактировать профиль</button></a>
+        {% if request.user.is_staff or request.user.is_superuser %}
+          <br/>
+          <a href="/admin/">Перейти на страницу администратора</a>
+        {% endif %}
+      {% endif %}
+    </dl>
+  </div>
+</div>
 {% endblock %}
