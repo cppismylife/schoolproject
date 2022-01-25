@@ -179,12 +179,20 @@ class ProfileEditForm(forms.Form):
         required=False,
         widget=forms.ClearableFileInput(
             attrs={
-                'class': 'form-control form-control-sm',
+                'class': 'form-control form-control-sm mx-auto',
                 'form': 'MainForm',
+                'onchange': 'previewImage()',
+                'style': 'width: 65%'
             },
         ),
         validators=[file_size]
     )
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Пользователь с таким адресом почты уже существует")
+        return email
 
 
 class CustomRegistrationForm(RegistrationForm):
@@ -200,6 +208,12 @@ class CustomRegistrationForm(RegistrationForm):
         strip=False,
         help_text=_("Enter the same password as before, for verification."),
     )
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Пользователь с таким адресом почты уже существует")
+        return email
 
     class Meta(UserCreationForm.Meta):
         fields = [
