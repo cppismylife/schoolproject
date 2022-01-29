@@ -255,7 +255,7 @@ class VotingEditForm(forms.ModelForm):
     finishes = forms.DateTimeField(
         widget=forms.DateTimeInput(
             attrs={
-                'placeholder': 'Окончание голосования',
+                'placeholder': 'Окончание опроса',
                 'type': 'datetime-local'
             },
             format='%Y-%m-%dT%H:%M'),
