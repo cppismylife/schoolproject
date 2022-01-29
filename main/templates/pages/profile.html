@@ -29,7 +29,7 @@
     </dl>
     <br>
     <dl class="row">
-      <dt class="col-md-auto">Количество созданных голосований:</dt>
+      <dt class="col-md-auto">Количество созданных опросов:</dt>
       <dd class="col-md-auto">{{ votings.count }}</dd>
     </dl>
     <dl class="row">
@@ -41,7 +41,7 @@
   <div class="container">
     <dl class="row">
       <a href="{% url 'votings_list' %}">
-        <button class="btn btn-secondary" type="button">Созданные голосования</button>
+        <button class="btn btn-secondary" type="button">Созданные опроса</button>
       </a>
     </dl>
     <dl class="row">
@@ -52,8 +52,9 @@
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
           {% for vote in votes %}
-          <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">Голосование
-            '{{ vote.variants.first.voting.name }}'</a></li>
+          <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">
+            '{{ vote.variants.first.voting.name }}'
+          </a></li>
           {% endfor %}
         </ul>
       </div>

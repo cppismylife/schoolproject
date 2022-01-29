@@ -55,7 +55,7 @@ class VotingPage(TemplatePage):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pagename'] = 'Просмотр голосования'
+        context['pagename'] = 'Просмотр опроса'
         context['eligible_to_vote'] = check_eligible_to_vote(
             Voting.objects.get(id=kwargs['id']), self.request.user
         )
@@ -69,7 +69,7 @@ class VotingResults(VotingPage):
         facts = self.count_facts(**kwargs)
         context = super().get_context_data(**kwargs)
         context['facts'] = facts
-        context['pagename'] = 'Результаты голосования'
+        context['pagename'] = 'Результаты опроса'
         if len([value for value in facts.values() if value]):
             context['plotly'] = self.create_chart(facts.copy())
         return context
