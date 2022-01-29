@@ -41,7 +41,7 @@
   <div class="container">
     <dl class="row">
       <a href="{% url 'votings_list' %}">
-        <button class="btn btn-secondary" type="button">Созданные опроса</button>
+        <button class="btn btn-secondary" type="button">Созданные опросы</button>
       </a>
     </dl>
     <dl class="row">
@@ -53,7 +53,7 @@
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
           {% for vote in votes %}
           <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">
-            '{{ vote.variants.first.voting.name }}'
+            {{ vote.variants.first.voting.name }}
           </a></li>
           {% endfor %}
         </ul>
