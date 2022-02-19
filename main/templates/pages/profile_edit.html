@@ -14,7 +14,7 @@
     <div class="container text-center mb-5">
       <div class="mb-4">
         {% if user.profile.profile_image == '' %}
-          <img src="{% static '/main/No-image.png' %}" class="shadow profile-image">
+          <img src="{% static '/main/No-image.png' %}" class="shadow profile-image" style="max-height: 50vh; object-fit: contain">
         {% else %}
           <img src="/media/{{ user.profile.profile_image }}" class="profile-image" style="max-height: 50vh; object-fit: contain">
         {% endif %}
