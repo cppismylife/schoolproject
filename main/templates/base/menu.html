@@ -18,7 +18,7 @@
 
       <div class="collapse navbar-collapse" id="navbarCollapse">
 
-        <ul class="navbar-nav mb-2 mb-md-0 me-auto justify-content-center">
+        <ul class="navbar-nav mb-md-0 me-auto justify-content-center">
           {% for link in menu %}
           <li class="nav-item active">
             <a class="nav-link" aria-current="page" href="{% url link.url_name %}"
@@ -28,7 +28,7 @@
           {% endfor %}
         </ul>
 
-        <ul class="navbar-nav mb-2 mb-md-0 ml-auto justify-content-center">
+        <ul class="navbar-nav mb-md-0 ml-auto justify-content-center">
           {% if request.user.is_authenticated %}
 
           <li class="nav-item active ">
