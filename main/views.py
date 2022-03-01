@@ -107,7 +107,7 @@ class VotingResults(VotingPage):
             name='',
             hovertemplate='Вариант: %{label}<br>Количество голосов: %{value}</br>%{percent}'
         )
-        fig.update_yaxes(row=1, col=1, title_text='Количество голосов')
+        fig.update_yaxes(row=1, col=1, title_text='Количество голосов', tickmode='array', tickvals=[0] + list(facts.values()))
         fig.update_xaxes(row=1, col=1, title_text='Варианты ответов')
         return to_html(fig, full_html=False, include_plotlyjs='cdn')
 
