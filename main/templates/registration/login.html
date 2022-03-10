@@ -2,23 +2,24 @@
 {% load bootstrap5 %}
 
 {% block title %}
-  {{ pagename }}
+{{ pagename }}
 {% endblock %}
 
 {% block heading %}
-  Авторизация
+Авторизация
 {% endblock %}
 
 {% block content %}
-  <div class="container w-75">
-      <form action="{{request.get_full_path}}" method="POST">
-        {% csrf_token %}
-        {% bootstrap_form form%}
-        {% buttons %}
-        <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
-        {% endbuttons %}
-      </form>
-      <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
-  </div>
+<div class="container w-75">
+  <form action="{{request.get_full_path}}" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form%}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary float-right btn-block">Войти</button>
+    {% endbuttons %}
+  </form>
+  <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+  <p><a href="/accounts/register">Зарегистрироваться</a></p>
+</div>
 {% endblock %}
 

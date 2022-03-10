@@ -102,7 +102,7 @@ urlpatterns += [
          RegistrationView.as_view(
              form_class=CustomRegistrationForm,
              success_url=reverse('index')
-         ), name='django_registration_register', ),
+         ), name='register'),
     path('accounts/', include('django_registration.backends.one_step.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('login/', auth_views.LoginView.as_view(

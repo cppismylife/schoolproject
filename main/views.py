@@ -17,6 +17,7 @@ from main.forms import InputForm, VotingContext, VoteOneOfTwoForm, \
 from main.models import Voting, VoteVariant, VoteFact, User
 
 
+
 def get_menu_context(auth=False):
     pages = [
         {'url_name': 'voting_search', 'name': 'Найти опрос'}
