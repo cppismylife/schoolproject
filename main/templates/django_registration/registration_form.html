@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" action=".">
+  <form method="post" action="./?next={{request.GET.next}}">
     {% csrf_token %}
     <div class="col">
       {% if form.errors %}

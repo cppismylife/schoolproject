@@ -19,7 +19,7 @@
     {% endbuttons %}
   </form>
   <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
-  <p><a href="/accounts/register">Зарегистрироваться</a></p>
+  <p><a href="/accounts/register/?next={{request.GET.next}}">Зарегистрироваться</a></p>
 </div>
 {% endblock %}
 

@@ -15,7 +15,7 @@ from main.extra_func import get_forms, check_valid_and_create, check_eligible_to
 from main.forms import InputForm, VotingContext, VoteOneOfTwoForm, \
     VoteOneOfManyForm, VoteManyOfManyForm, ProfileEditForm, VotingEditForm, VotingSearchForm
 from main.models import Voting, VoteVariant, VoteFact, User
-
+from django_registration.backends.one_step.views import RegistrationView
 
 
 def get_menu_context(auth=False):
@@ -353,3 +353,11 @@ class VotingEdit(LoginRequiredMixin, UpdateView):
             return context
         else:
             raise PermissionDenied
+
+
+class CustomRegistrationView(RegistrationView):
+    def form_valid(self, form):
+        super().form_valid(form)
+        redirect_to = self.request.GET.get('next')
+        if form.is_valid():
+            return redirect(redirect_to if redirect_to else '/')
