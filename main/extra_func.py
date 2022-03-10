@@ -51,9 +51,6 @@ def check_valid_and_create(context, forms, request, voteinfo):
 
 
 def check_eligible_to_vote(voting: Voting, user: User) -> bool:
-    if user.is_anonymous:
-        return False
-
     # validate that user isn't the Voting author
     if voting.author == user:
         return False
@@ -65,8 +62,8 @@ def check_eligible_to_vote(voting: Voting, user: User) -> bool:
     # validate that user has not voted on this Voting before
     for vote_variant in voting.votevariant_set.all():
         vote_variant: VoteVariant = vote_variant
-
-        if vote_variant.votefact_set.filter(user=user).count() != 0:
-            return False
+        if user.is_authenticated:
+            if vote_variant.votefact_set.filter(user=user).count() != 0:
+                return False
 
     return True

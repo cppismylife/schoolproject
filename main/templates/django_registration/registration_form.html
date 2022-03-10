@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post" action=".">
+  <form method="post" action="./?next={{request.GET.next}}">
     {% csrf_token %}
     <div class="col">
       {% if form.errors %}
@@ -28,7 +28,7 @@
           <div class="col">
             {% for item in form %}
               <div class="form-group">
-                <label class="form-label fs-3"> {{ item.label }} </label>
+                <label class="form-label fs-4"> {{ item.label }} </label>
                 <div>{{ item }}</div>
                 {% if item.errors %}
                   <div class="mb-3"> {{ item.errors }}</div>
