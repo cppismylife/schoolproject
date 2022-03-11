@@ -106,10 +106,6 @@ urlpatterns += [
                 'menu': views.get_menu_context(),
             }
         ),
-        # RegistrationView.as_view(
-        #     form_class=CustomRegistrationForm,
-        #     success_url=reverse('index')
-        # ),
         name='register'
     ),
     path('accounts/', include('django_registration.backends.one_step.urls')),

@@ -98,7 +98,8 @@ class VotingResults(VotingPage):
             y=list(facts.values()),
             name='',
             showlegend=False,
-            hovertemplate='Вариант: %{x}<br>Количество голосов: %{y}'
+            hovertemplate='Вариант: %{x}<br>Количество голосов: %{y}',
+            marker_color=['grey'] * len(list(facts.items()))
         )
         fig.add_pie(
             row=1, col=2,
@@ -106,8 +107,9 @@ class VotingResults(VotingPage):
             labels=list(facts.keys()),
             textposition="auto",
             name='',
-            hovertemplate='Вариант: %{label}<br>Количество голосов: %{value}</br>%{percent}'
+            hovertemplate='Вариант: %{label}<br>Количество голосов: %{value}</br>%{percent}',
         )
+        fig.update_traces(marker=dict(line=dict(color='#000000', width=1)))
         fig.update_yaxes(row=1, col=1, dtick=1, title_text='Количество голосов')  # tickmode='array', tickvals=[0] + list(facts.values())
         fig.update_xaxes(row=1, col=1, title_text='Варианты ответов')
         return to_html(fig, full_html=False, include_plotlyjs='cdn')
