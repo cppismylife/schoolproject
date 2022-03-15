@@ -8,8 +8,8 @@
   <div class="card">
     <div class="card-header">
       <div class="flex d-flex bd-highlight align-items-center">
-        <h1 class="bd-highlight card-title text-break fs-3 me-auto">{{ voting.name }}</h1>
-        <div class="ms-auto d-flex bd-highlight justify-content-center align-items-center flex-wrap">
+        <h1 class="bd-highlight card-title text-break fs-3 me-auto mb-0">{{ voting.name }}</h1>
+        <div class="d-flex bd-highlight justify-content-center align-items-center flex-wrap">
         <span class="me-2">
           {% if today < voting.published %}
             <span class="badge bg-secondary fs-6">Не началось</span>
@@ -59,7 +59,7 @@
     {% endif %}
 
     <div class="card-body mb-0">
-      <h3 style="text-align: justify">{{ voting.description }}</h3>
+      <h3 class="mb-0" style="text-align: justify">{{ voting.description }}</h3>
     </div>
     {% block extra_info %}
     {% endblock %}

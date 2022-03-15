@@ -6,9 +6,6 @@
 .flex {
   flex-wrap: wrap;
 }
- h1.card-title {
-  margin-bottom: 10px;
- }
 
 .res-button {
   margin-bottom: 7px;
