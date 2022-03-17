@@ -112,7 +112,7 @@ class VotingResults(VotingPage):
         )
         fig.update_layout(yaxis_tickformat=',d')
         fig.update_traces(marker=dict(line=dict(color='#000000', width=1)))
-        fig.update_yaxes(row=1, col=1, title_text='Количество голосов', title_standoff=0)
+        fig.update_yaxes(row=1, col=1, title_text='Количество голосов')
         fig.update_xaxes(row=1, col=1, title_text='Варианты ответов')
         return to_html(fig, full_html=False, include_plotlyjs='cdn')
 
