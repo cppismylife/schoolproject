@@ -1,4 +1,6 @@
 import datetime
+
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.password_validation import validate_password
@@ -58,7 +60,7 @@ class VotingPage(TemplatePage):
         context = super().get_context_data(**kwargs)
         context['pagename'] = 'Просмотр опроса'
         context['eligible_to_vote'] = check_eligible_to_vote(
-            Voting.objects.get(id=kwargs['id']), self.request.user
+            Voting.objects.get(id=kwargs['id']), self.request
         )
         return context
 
@@ -117,7 +119,6 @@ class VotingResults(VotingPage):
         return to_html(fig, full_html=False, include_plotlyjs='cdn')
 
 
-@login_required()
 def vote_page(request, **kwargs):
     context = {
         'menu': get_menu_context(request.user.is_authenticated),
@@ -140,8 +141,8 @@ def vote_page(request, **kwargs):
     # get the Voting to work with
     voting: Voting = get_object_or_404(Voting, id=kwargs['id'])
 
-    if not check_eligible_to_vote(voting, request.user):
-        raise PermissionDenied('can not vote on this voting')
+    if not check_eligible_to_vote(voting, request):
+        raise PermissionDenied('Can not vote on this voting')
 
     if request.method == 'POST':
 
@@ -151,10 +152,12 @@ def vote_page(request, **kwargs):
 
         if form.is_valid():
             data = form.cleaned_data
-
+            vote_fact_user = None
+            if request.user.is_authenticated:
+                vote_fact_user = request.user
             vote_fact = VoteFact(
                 created=timezone.now(),
-                user=request.user,
+                user=vote_fact_user,
             )
             # save new vote fact to use it's id in the ManyToMany relationship
             vote_fact.save()
@@ -162,8 +165,14 @@ def vote_page(request, **kwargs):
                 vote_fact.variants.add(data['choices'])
             elif form_type == VoteManyOfManyForm:
                 vote_fact.variants.set(data['choices'])
-
             vote_fact.save()
+
+            votes = request.session.get('votes')
+            if votes:
+                votes.append(voting)
+                request.session.modified = True
+            else:
+                request.session['votes'] = [voting.id]
 
         # redirect user to results page after creating VoteFact
         return redirect('results_page', id=voting.id)
@@ -365,3 +374,20 @@ class CustomRegistrationView(RegistrationView):
         redirect_to = self.request.GET.get('next')
         if form.is_valid():
             return redirect(redirect_to if redirect_to else '/')
+
+
+class CustomLogoutView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        session_data = list(self.get_user_votes(request.user)) if request.user.is_authenticated \
+            else request.session.get('votes')
+        logout(request)
+        request.session['votes'] = session_data
+        return redirect('index')
+
+    @staticmethod
+    def get_user_votes(user):
+        votes = set()
+        votefacts = VoteFact.objects.filter(user=user)
+        for votefact in votefacts:
+            votes.add(votefact.variants.all()[0].voting.id)
+        return votes

@@ -47,7 +47,7 @@ class VoteVariant(models.Model):
 
 
 class VoteFact(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     variants = models.ManyToManyField(VoteVariant)
     created = models.DateTimeField(default=timezone.now)
 

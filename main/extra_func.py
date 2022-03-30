@@ -50,10 +50,10 @@ def check_valid_and_create(context, forms, request, voteinfo):
     return flag
 
 
-def check_eligible_to_vote(voting: Voting, user: User) -> bool:
-    # validate that user isn't the Voting author
-    if voting.author == user:
-        return False
+def check_eligible_to_vote(voting: Voting, request) -> bool:
+    if request.session.get('votes'):
+        if voting.id in request.session.get('votes'):
+            return False
 
     # validate that voting is active
     if not (voting.published < timezone.now() < voting.finishes):
@@ -62,8 +62,8 @@ def check_eligible_to_vote(voting: Voting, user: User) -> bool:
     # validate that user has not voted on this Voting before
     for vote_variant in voting.votevariant_set.all():
         vote_variant: VoteVariant = vote_variant
-        if user.is_authenticated:
-            if vote_variant.votefact_set.filter(user=user).count() != 0:
+        if request.user.is_authenticated:
+            if vote_variant.votefact_set.filter(user=request.user).count() != 0:
                 return False
 
     return True

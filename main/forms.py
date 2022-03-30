@@ -345,7 +345,7 @@ class EmailBackend(ModelBackend):
 class CustomUserLoginForm(AuthenticationForm):
     username = forms.EmailField(
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': ''}
+            attrs={'class': 'form-control', 'placeholder': '', 'type': 'email'}
         ),
         label='Email'
     )
