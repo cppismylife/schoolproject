@@ -8,17 +8,21 @@
   <div class="d-flex h-300 text-center">
     <div class="mt-5 d-flex h-300 p-3 mx-auto flex-column">
       <h3 class=" mt-4">Здесь вы можете оставить отзыв/мнение о чем угодно, а также создать своё собственный
-        опрос,
-        чтобы узнать мнение других посетителей сайта.</h3>
-      {% if auth %}
-      {% else %}
-        <h5 class="lead mt-4">Создавать опросы и оставлять голоса могут только авторизованные пользователи.</h5>
-        <p class="lead mt-4">
-          <a href="accounts/register/"
-             class="btn btn-lg btn-secondary fw-bold border-white bg-dark">Зарегистрироваться</a>
-          <a href="login/" class="btn btn-lg btn-secondary fw-bold border-white bg-dark">Войти</a>
-        </p>
+        опрос, чтобы узнать мнение других посетителей сайта.</h3>
+      {% if not auth %}
+        <h5 class="lead mt-4">Создавать опросы могут только авторизованные пользователи.</h5>
       {% endif %}
+      <div class="mt-4 d-flex justify-content-center flex-wrap">
+        <a href="{% url 'voting_search' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-dark m-1">Найти опрос</a>
+        {% if auth %}
+          <a href="{% url 'create_voting' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-dark m-1">Создать опрос</a>
+          <a href="{% url 'votings_list' %}" class="btn btn-lg btn-secondary fw-bold border-white bg-dark m-1">Мои опросы</a>
+        {% else %}
+          <a href="accounts/register/"
+             class="btn btn-lg btn-secondary fw-bold border-white bg-dark m-1">Зарегистрироваться</a>
+          <a href="login/" class="btn btn-lg btn-secondary fw-bold border-white bg-dark m-1">Войти</a>
+        {% endif %}
+      </div>
     </div>
   </div>
 {% endblock %}
