@@ -382,10 +382,15 @@ class CustomRegistrationView(RegistrationView):
 
 class CustomLogoutView(TemplateView):
     def get(self, request, *args, **kwargs):
-        session_data = list(self.get_user_votes(request.user)) if request.user.is_authenticated \
-            else request.session.get('votes')
+        session_votes = request.session.get('votes')
+        if request.user.is_authenticated:
+            session_data = self.get_user_votes(request.user)
+            if session_votes:
+                session_data.update(session_votes)
+        else:
+            session_data = session_votes
         logout(request)
-        request.session['votes'] = session_data
+        self.request.session['votes'] = list(session_data)
         return redirect('index')
 
     @staticmethod
