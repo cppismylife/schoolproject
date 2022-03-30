@@ -51,9 +51,9 @@
           Голоса
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-          {% for vote in votes %}
-          <li><a class="dropdown-item" href="{% url 'voting_page' vote.variants.first.voting.id %}">
-            {{ vote.variants.first.voting.name }}
+          {% for voting in user_votings %}
+          <li><a class="dropdown-item" href="{% url 'voting_page' voting.id %}">
+            {{ voting.name }}
           </a></li>
           {% endfor %}
         </ul>

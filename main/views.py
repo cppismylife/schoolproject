@@ -319,6 +319,10 @@ def profile_page(request, id):
     context['votings'] = votings
     context['votes'] = votes
     context['user'] = user
+    user_votings = set()
+    for votefact in votes:
+        user_votings.add(votefact.variants.all()[0].voting)
+    context['user_votings'] = list(user_votings)
     return render(request, 'pages/profile.html', context)
 
 
