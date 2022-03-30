@@ -169,7 +169,7 @@ def vote_page(request, **kwargs):
 
             votes = request.session.get('votes')
             if votes:
-                votes.append(voting)
+                votes.append(voting.id)
                 request.session.modified = True
             else:
                 request.session['votes'] = [voting.id]
