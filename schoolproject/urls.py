@@ -117,7 +117,7 @@ urlpatterns += [
         },
         authentication_form=CustomUserLoginForm
     ), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
 ]
 
 # Нужно для отображения изображения на странице
