@@ -184,6 +184,7 @@ def vote_page(request, **kwargs):
         return render(request, 'pages/vote.html', context)
 
 
+@login_required()
 def votings_page(request):
     context = {
         'pagename': 'Список опросов',

@@ -48,6 +48,30 @@ urlpatterns += [
     path('profile/<int:id>/', views.profile_page, name='profile'),
 ]
 
+# auth_and_register
+urlpatterns += [
+    path(
+        'accounts/register/',
+        views.CustomRegistrationView.as_view(
+            form_class=CustomRegistrationForm,
+            extra_context={
+                'menu': views.get_menu_context(),
+            }
+        ),
+        name='register'
+    ),
+    path('accounts/', include('django_registration.backends.one_step.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('login/', auth_views.LoginView.as_view(
+        extra_context={
+            'menu': views.get_menu_context(),
+            'pagename': 'Авторизация'
+        },
+        authentication_form=CustomUserLoginForm
+    ), name='login'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
+]
+
 # password_reset
 urlpatterns += [
     path(
@@ -94,30 +118,6 @@ urlpatterns += [
         ),
         name='password_reset_complete'
     ),
-]
-
-# auth_and_register
-urlpatterns += [
-    path(
-        'accounts/register/',
-        views.CustomRegistrationView.as_view(
-            form_class=CustomRegistrationForm,
-            extra_context={
-                'menu': views.get_menu_context(),
-            }
-        ),
-        name='register'
-    ),
-    path('accounts/', include('django_registration.backends.one_step.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('login/', auth_views.LoginView.as_view(
-        extra_context={
-            'menu': views.get_menu_context(),
-            'pagename': 'Авторизация'
-        },
-        authentication_form=CustomUserLoginForm
-    ), name='login'),
-    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
 ]
 
 # Нужно для отображения изображения на странице
